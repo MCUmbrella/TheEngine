@@ -9,6 +9,7 @@
 #include "RenderManager.h"
 #include "LuaRuntime.h"
 #include "exception/LuaException.h"
+#include "ConfigManager.h"
 
 using std::bitset;
 
@@ -17,8 +18,6 @@ const static int TARGET_TPS = 60;
 const static int TPS_CORRECTION_FREQ = 10;
 const static long TICK_MAX_NS = 1000000000L / TARGET_TPS;
 static unsigned long tickCounter = 0;
-const static char* PRE_INIT_SCRIPT_PATH = "the_engine/data/lua/preInit.lua";
-const static char* POST_INIT_SCRIPT_PATH = "the_engine/data/lua/postInit.lua";
 static bitset<1024> keysP{}; // pressed keys at a single tick (calculated at the end of pollSDLEvents)
 static bitset<1024> keysH[2]{}; // currently holding keys. [0]: down, [1]: repeat
 static bitset<1024> keysH_p[2]{}; // keysH at previous tick
@@ -63,18 +62,19 @@ void Engine::pollSDLEvents()
     keysP = keysH_p[0].flip() & keysH[0]; // for(int i = 0; i != 1024; i++) keysP.set(i, !keysH_p[0][i] && keysH[0][i]);
 }
 
-void Engine::init()
+void Engine::init(const string& configPath)
 {
     if(getState() == UNINITIALIZED || getState() == STOPPED)
     {
         logInfo << "Initializing";
         state = INITIALIZING;
+        ConfigManager::loadConfig(configPath);
         LuaRuntime::init();
-        LuaRuntime::runFile(PRE_INIT_SCRIPT_PATH);
+        LuaRuntime::runFile(ConfigManager::getEngineDataPath() + "/data/lua/preInit.lua");
         RenderManager::init();
         logInfo << "Initialization OK";
         state = STOPPED;
-        LuaRuntime::runFile(POST_INIT_SCRIPT_PATH);
+        LuaRuntime::runFile(ConfigManager::getEngineDataPath() + "/data/lua/postInit.lua");
     }
     else
     {
@@ -101,7 +101,7 @@ void Engine::mainLoop()
 {
     logInfo << "Entering main loop";
 
-    LuaRuntime::runFile("the_game/data/lua/main.lua");
+    LuaRuntime::runFile(ConfigManager::getUserDataPath() + "/data/lua/main.lua");
     kaguya::State& l = LuaRuntime::getLua();
     for(auto& s : {"prepare", "tick", "cleanup"})
         if(!l[s].isType<kaguya::LuaFunction>())
@@ -119,8 +119,8 @@ void Engine::mainLoop()
 
         // delay & correction
         int64_t endTime = CommonUtil::currentTimeNanos(),
-                executionTime = endTime - startTime,
-                delay = TICK_MAX_NS - executionTime;
+            executionTime = endTime - startTime,
+            delay = TICK_MAX_NS - executionTime;
         // if a single tick took too long to process, cancel the delay
         if(executionTime > TICK_MAX_NS)
         {

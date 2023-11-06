@@ -8,27 +8,31 @@
 #include "util/Logger.h"
 #include "exception/EngineException.h"
 #include "render/RenderLayer.h"
+#include "ConfigManager.h"
 
 using std::to_string;
 
-const static char* FONT_PATH = "the_engine/assets/fonts/default.ttf";
-const static char* PLACEHOLDER_TEXTURE_PATH = "the_engine/assets/textures/misc/placeholder.png";
+static string placeholderTexturePath;
 static SDL_Texture* placeholderTexture = nullptr;
-static SDL_Renderer* renderer = nullptr;
+
+static string windowTitle;
 static SDL_Window* window = nullptr;
 static int windowX = 0;
 static int windowY = 0;
 static int windowWidth = 640;
 static int windowHeight = 480;
-static string windowTitle;
+static SDL_Renderer* renderer = nullptr;
 static unsigned int bgR = 0U;
 static unsigned int bgG = 0U;
 static unsigned int bgB = 0U;
+
+static string defaultFontPath;
 static TTF_Font* font16 = nullptr;
 static TTF_Font* font24 = nullptr;
 static TTF_Font* font32 = nullptr;
 static TTF_Font* font40 = nullptr;
 static TTF_Font* font48 = nullptr;
+
 static std::map<int, RenderLayer> layers;
 static std::unordered_map<string, SDL_Texture*> loadedTextures;
 
@@ -51,6 +55,7 @@ SDL_Renderer* RenderManager::getRenderer()
 void RenderManager::init()
 {
     logInfo << "Initializing render manager";
+
     // initialize sdl
     if(SDL_Init(SDL_INIT_VIDEO) < 0)
     {
@@ -64,28 +69,34 @@ void RenderManager::init()
         logError << SDL_GetError();
         throw EngineException("RenderManager initialization failed");
     }
-    // create window
+
+    // create window and sdl renderer
     logInfo << "Creating window";
     window = SDL_CreateWindow(
-            windowTitle.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-            windowWidth, windowHeight, 0
+        windowTitle.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+        windowWidth, windowHeight, 0
     );
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
     renderer = SDL_CreateRenderer(window, -1, 0);
     SDL_SetRenderDrawColor(renderer, bgR, bgG, bgB, 255);
     logInfo << "Window created: " << SDL_GetWindowTitle(window);
+
     // load placeholder texture
+    placeholderTexturePath = ConfigManager::getEngineDataPath() + "/assets/textures/misc/placeholder.png";
     IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
-    if((placeholderTexture = IMG_LoadTexture(renderer, PLACEHOLDER_TEXTURE_PATH)) == nullptr)
-        throw EngineException("Is the placeholder texture file \"" + string(PLACEHOLDER_TEXTURE_PATH) + "\" OK?");
-    loadedTextures[PLACEHOLDER_TEXTURE_PATH] = placeholderTexture;
+    if((placeholderTexture = IMG_LoadTexture(renderer, placeholderTexturePath.c_str())) == nullptr)
+        throw EngineException("Is the placeholder texture file \"" + string(placeholderTexturePath) + "\" OK?");
+    loadedTextures[placeholderTexturePath] = placeholderTexture;
+
     // load default font
-    if((font16 = TTF_OpenFont(FONT_PATH, 16)) == nullptr)
-        throw EngineException("Is the default font file \"" + string(FONT_PATH) + "\" OK?");
-    font24 = TTF_OpenFont(FONT_PATH, 24);
-    font32 = TTF_OpenFont(FONT_PATH, 32);
-    font40 = TTF_OpenFont(FONT_PATH, 40);
-    font48 = TTF_OpenFont(FONT_PATH, 48);
+    defaultFontPath = ConfigManager::getEngineDataPath() + "/assets/fonts/default.ttf";
+    if((font16 = TTF_OpenFont(defaultFontPath.c_str(), 16)) == nullptr)
+        throw EngineException("Is the default font file \"" + defaultFontPath + "\" OK?");
+    font24 = TTF_OpenFont(defaultFontPath.c_str(), 24);
+    font32 = TTF_OpenFont(defaultFontPath.c_str(), 32);
+    font40 = TTF_OpenFont(defaultFontPath.c_str(), 40);
+    font48 = TTF_OpenFont(defaultFontPath.c_str(), 48);
+
     logInfo << "Render manager initialization completed";
 }
 
@@ -220,7 +231,7 @@ bool RenderManager::unloadTexture(const string& path)
         else // who's trying to unload placeholder texture?
         {
             logWarn << "Placeholder texture will not be unloaded";
-            if(path != PLACEHOLDER_TEXTURE_PATH)
+            if(path != placeholderTexturePath)
                 loadedTextures.erase(path);
         }
     }
@@ -263,9 +274,9 @@ void RenderManager::placeTexture(SDL_Texture* texture, const int& x, const int& 
 }
 
 SDL_Texture* RenderManager::text2Texture(
-        const string& text,
-        const unsigned char& r, const unsigned char& g, const unsigned char& b, const unsigned char& a,
-        const FontSize& size
+    const string& text,
+    const unsigned char& r, const unsigned char& g, const unsigned char& b, const unsigned char& a,
+    const FontSize& size
 )
 {
     SDL_Color color;
@@ -275,12 +286,12 @@ SDL_Texture* RenderManager::text2Texture(
     color.a = a;
     SDL_Surface* surface;
     surface = TTF_RenderUTF8_Blended(
-            size == FontSize::XL ? font48 :
-            size == FontSize::L ? font40 :
-            size == FontSize::M ? font32 :
-            size == FontSize::S ? font24 :
-            font16,
-            text.c_str(), color
+        size == FontSize::XL ? font48 :
+        size == FontSize::L ? font40 :
+        size == FontSize::M ? font32 :
+        size == FontSize::S ? font24 :
+        font16,
+        text.c_str(), color
     );
     return surfaceToTexture(surface, true);
 }

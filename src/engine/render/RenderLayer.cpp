@@ -55,11 +55,11 @@ void RenderLayer::apply()
     {
         RenderEntity& re = rep.second;
         RenderManager::placeTexture(
-                re.sdlTexture,
-                re.x - re.textureWidth / 2.0,
-                re.y - re.textureHeight / 2.0,
-                re.textureWidth,
-                re.textureHeight
+            re.sdlTexture,
+            re.x - re.textureWidth / 2.0,
+            re.y - re.textureHeight / 2.0,
+            re.textureWidth,
+            re.textureHeight
         );
     }
 }

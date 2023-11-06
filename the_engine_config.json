@@ -1,4 +1,4 @@
 {
-  "engineDataDir": "the_engine",
-  "load": "the_game"
+  "engineDataPath": "the_engine",
+  "userDataPath": "the_game"
 }

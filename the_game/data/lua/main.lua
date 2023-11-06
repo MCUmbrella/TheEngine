@@ -10,7 +10,7 @@ local wb = 127
 
 local player
 local playerId
-local PLAYER_TEXTURE = "the_engine/assets/textures/entity/holy moly.png"
+local PLAYER_TEXTURE = "the_game/assets/textures/entity/holy moly.png"
 
 local spaceHoldingTicks = 0
 
@@ -46,7 +46,6 @@ function tick()
     if Engine.keyPressed(41) or t == 3600
     then
         Engine.stop()
-        --Runtime.switchTo("the_engine/data/lua/level.lua")
         return
     end
 

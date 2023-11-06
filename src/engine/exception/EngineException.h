@@ -5,8 +5,7 @@
 #ifndef THEENGINE_ENGINEEXCEPTION_H
 #define THEENGINE_ENGINEEXCEPTION_H
 
-#include <exception>
-#include <string>
+#include <stdexcept>
 
 using std::string;
 

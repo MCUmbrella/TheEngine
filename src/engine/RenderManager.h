@@ -129,9 +129,9 @@ public:
      * NOTICE: The RGB and Alpha amount is valid in 0~255.
      */
     static SDL_Texture* text2Texture(
-            const string& text,
-            const unsigned char& r, const unsigned char& g, const unsigned char& b, const unsigned char& a,
-            const FontSize& size
+        const string& text,
+        const unsigned char& r, const unsigned char& g, const unsigned char& b, const unsigned char& a,
+        const FontSize& size
     );
 
     static SDL_Texture* surfaceToTexture(SDL_Surface* surface, const bool& destroySurface);

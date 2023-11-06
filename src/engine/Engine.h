@@ -6,7 +6,10 @@
 #define THEENGINE_ENGINE_H
 
 #include "EngineState.h"
+#include <string>
 #include <SDL2/SDL_scancode.h>
+
+using std::string;
 
 class Engine
 {
@@ -31,7 +34,7 @@ public:
      * This function can be called only once and must be called
      * before calling any other functions.
      */
-    static void init();
+    static void init(const string& configPath);
 
     /**
      * Start the Engine.

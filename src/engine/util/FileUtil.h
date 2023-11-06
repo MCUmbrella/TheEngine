@@ -17,6 +17,10 @@ public:
     static bool isFile(const string& path);
 
     static bool isDir(const string& path);
+
+    static string readStr(const string& path);
+
+    static string readStr(const string& path, const string& fallback);
 };
 
 #endif //THEENGINE_FILEUTIL_H

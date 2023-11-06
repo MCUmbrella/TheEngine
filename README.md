@@ -18,7 +18,6 @@ make
 # TODO
 - statically link libsdl2 and liblua
 - RenderLayer.apply()
-- the_engine_config.json
 - cursor
 - texture rotating
 - texture flipping, mirroring, etc.
