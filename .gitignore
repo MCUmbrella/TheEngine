@@ -1,17 +1,25 @@
-.idea/
-.vscode/
-/build/
-cmake-build-debug/
-CMakeFiles/
-cmake_install.cmake
-CMakeCache.txt
-Makefile
+# Shell
+/CMakeFiles/
+/cmake_install.cmake
+/CMakeCache.txt
+/Makefile
+/TheEngine
 
+# Visual Studio Code
+/.vscode/
+/build/
+
+
+# CLion
+/.idea/
+/cmake-build-debug/
+
+# Dev-C++
 *.dev
 *.layout
 *.win
-*.o
 *.exe
-*.kate-swp
 
-/TheEngine
+# Miscellaneous
+*.o
+*.kate-swp

@@ -1,0 +1,11 @@
+Kaguya:
+  Version: 9d77cad73846f5d8481f3f7e86e8c53c4891c2fb
+  Source: https://github.com/satoren/kaguya/tree/9d77cad73846f5d8481f3f7e86e8c53c4891c2fb
+
+Niels Lohmann's JSON for Modern C++:
+  Version: 3.11.2
+  Source: https://github.com/nlohmann/json/releases/download/v3.11.2/json.hpp
+
+snowflake-cpp:
+  Version: 71c1342ec3641121a32dfbb5b65b50f49b01d76a
+  Source: https://github.com/sniper00/snowflake-cpp/raw/71c1342ec3641121a32dfbb5b65b50f49b01d76a/snowflake.hpp
