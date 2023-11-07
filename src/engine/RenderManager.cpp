@@ -97,6 +97,8 @@ void RenderManager::init()
     font40 = TTF_OpenFont(defaultFontPath.c_str(), 40);
     font48 = TTF_OpenFont(defaultFontPath.c_str(), 48);
 
+    addLayer(0);
+
     logInfo << "Render manager initialization completed";
 }
 

@@ -1,5 +1,8 @@
 local PLAYER_TEXTURE = "entity/dj.png"
+local BG_TEXTURE = "background/litang.jpg"
+local background
 local layer0
+local layer1
 local tt = 0
 
 function printPlayer()
@@ -14,14 +17,19 @@ function prepare()
     vx = 0
     vy = 0
     RenderManager.setWindowTitle("The Amazing Adventure of Tsondu Tenzin")
-    RenderManager.setBackgroundColor(233, 233, 233)
     RenderManager.loadTexture(PLAYER_TEXTURE)
+    RenderManager.loadTexture(BG_TEXTURE)
 
     ww = RenderManager.getWindowWidth()
     wh = RenderManager.getWindowHeight()
-    layer0 = RenderManager.addLayer(0)
-    player = layer0:addEntity(PLAYER_TEXTURE)
+    layer0 = RenderManager.getLayer(0)
+    layer1 = RenderManager.addLayer(1)
+    background = layer0:addEntity(BG_TEXTURE)
+    background:setLocation(ww / 2, wh / 2)
+    background:resizeTexture(ww, wh)
+    player = layer1:addEntity(PLAYER_TEXTURE)
     player:setLocation(ww / 2, wh / 2)
+
     printPlayer()
 end
 
@@ -62,4 +70,5 @@ end
 
 function cleanup()
     RenderManager.unloadTexture(PLAYER_TEXTURE)
+    RenderManager.unloadTexture(BG_TEXTURE)
 end

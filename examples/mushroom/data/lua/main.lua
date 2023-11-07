@@ -17,7 +17,7 @@ local spaceHoldingTicks = 0
 function prepare()
     Runtime.log("prepare() called")
     t = Engine.currentTick()
-    layer0 = RenderManager.addLayer(0)
+    layer0 = RenderManager.getLayer(0)
     wx = RenderManager.getWindowX()
     wy = RenderManager.getWindowY()
     ww = RenderManager.getWindowWidth()
