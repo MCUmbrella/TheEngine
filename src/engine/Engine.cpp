@@ -6,7 +6,7 @@
 #include "Engine.h"
 #include "util/Logger.h"
 #include "exception/InvalidStateException.h"
-#include "RenderManager.h"
+#include "render/RenderManager.h"
 #include "LuaRuntime.h"
 #include "exception/LuaException.h"
 #include "ConfigManager.h"

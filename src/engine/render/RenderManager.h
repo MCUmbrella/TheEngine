@@ -10,8 +10,8 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include "FontSize.h"
-#include "render/RenderEntity.h"
-#include "render/RenderLayer.h"
+#include "RenderEntity.h"
+#include "RenderLayer.h"
 
 using std::string;
 

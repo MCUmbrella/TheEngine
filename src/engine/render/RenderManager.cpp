@@ -5,10 +5,10 @@
 #include <map>
 #include <unordered_map>
 #include "RenderManager.h"
-#include "util/Logger.h"
-#include "exception/EngineException.h"
-#include "render/RenderLayer.h"
-#include "ConfigManager.h"
+#include "../util/Logger.h"
+#include "../exception/EngineException.h"
+#include "RenderLayer.h"
+#include "../ConfigManager.h"
 
 using std::to_string;
 

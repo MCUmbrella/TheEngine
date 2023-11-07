@@ -3,7 +3,7 @@
 //
 
 #include "RenderEntity.h"
-#include "../RenderManager.h"
+#include "RenderManager.h"
 #include "../ConfigManager.h"
 
 RenderEntity::RenderEntity(const int64_t& id, const string& texturePath) : id(id)

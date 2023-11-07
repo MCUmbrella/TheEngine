@@ -5,7 +5,7 @@
 #include "RenderLayer.h"
 #include "../util/CommonUtil.h"
 #include "../exception/EngineException.h"
-#include "../RenderManager.h"
+#include "RenderManager.h"
 #include "../ConfigManager.h"
 
 int RenderLayer::getOrder()

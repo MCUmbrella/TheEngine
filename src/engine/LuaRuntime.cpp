@@ -6,7 +6,7 @@
 #include "util/Logger.h"
 #include "exception/LuaException.h"
 #include "Engine.h"
-#include "RenderManager.h"
+#include "render/RenderManager.h"
 #include "render/RenderEntity.h"
 #include "ConfigManager.h"
 #include "sound/SoundManager.h"
