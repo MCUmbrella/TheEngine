@@ -1,37 +1,80 @@
+function playerOnTop()
+    return player.y - player.hitboxHeight / 2 <= 0
+end
+
+function playerOnGround()
+    return player.y + player.hitboxHeight / 2 >= wh - 1
+end
+
+function playerOnLeft()
+    return player.x - player.hitboxWidth / 2 <= 0
+end
+
+function playerOnRight()
+    return player.x + player.hitboxWidth / 2 >= ww - 1
+end
+
+vy = vy + G / 60
+
 if Engine.keyHolding(4) -- A
 then
-    vx = -2
+    if vx > -5
+    then
+        vx = vx - 0.5
+    end
+elseif Engine.keyHolding(7) -- D
+then
+    if vx < 5
+    then
+        vx = vx + 0.5
+    end
+else
+    if (vx > 0)
+    then
+        vx = math.max(vx - 0.5, 0)
+    elseif (vx < 0)
+    then
+        vx = math.min(vx + 0.5, 0)
+    end
 end
 
-if Engine.keyHolding(7) -- D
+if Engine.keyHolding(44) -- SPACE
 then
-    vx = 2
-end
-
-if Engine.keyPressed(44) -- SPACE
-then
-    vy = -5
+    if playerOnGround() then -- ground jump
+        vy = -5
+    else
+        if playerOnLeft() then -- wall jump
+            vy = -5
+            vx = 5
+        elseif playerOnRight() then
+            vy = -5
+            vx = -5
+        end
+    end
 end
 
 player:move(vx, vy)
 
-if (player.x - player.hitboxWidth / 2 < 0)
-then
-    player.x = player.hitboxWidth / 2
-end
-
-if (player.y - player.hitboxHeight / 2 < 0)
+if playerOnTop()
 then
     player.y = player.hitboxHeight / 2
     vy = 0
 end
 
-if (player.x + player.hitboxWidth / 2 >= ww)
-then
-    player.x = ww - player.hitboxWidth / 2 - 1
-end
-
-if (player.y + player.hitboxHeight / 2 >= wh)
+if playerOnGround()
 then
     player.y = wh - player.hitboxHeight / 2 - 1
+    vy = 0
+end
+
+if playerOnLeft()
+then
+    player.x = player.hitboxWidth / 2
+    vx = 0
+end
+
+if playerOnRight()
+then
+    player.x = ww - player.hitboxWidth / 2 - 1
+    vx = 0
 end

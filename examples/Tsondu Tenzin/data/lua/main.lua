@@ -28,9 +28,6 @@ end
 function tick()
     t = Engine.currentTick()
 
-    vx = 0
-    vy = vy + G / 60
-
     if Engine.keyPressed(41) -- ESC
     then
         Engine.stop()
