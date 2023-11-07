@@ -42,13 +42,16 @@ if Engine.keyHolding(44) -- SPACE
 then
     if playerOnGround() then -- ground jump
         vy = -5
+        SoundManager.playSound(JUMP_SOUND)
     else
         if playerOnLeft() then -- wall jump
             vy = -5
             vx = 5
+            SoundManager.playSound(WALLJUMP_SOUND)
         elseif playerOnRight() then
             vy = -5
             vx = -5
+            SoundManager.playSound(WALLJUMP_SOUND)
         end
     end
 end

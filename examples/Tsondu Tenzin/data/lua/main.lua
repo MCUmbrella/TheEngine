@@ -1,5 +1,7 @@
 local PLAYER_TEXTURE = "entity/dj.png"
 local BG_TEXTURE = "background/litang.jpg"
+JUMP_SOUND = "sfx/entity/dj/jump.wav"
+WALLJUMP_SOUND = "sfx/entity/dj/walljump.wav"
 local background
 local layer0
 local layer1
@@ -27,6 +29,10 @@ function prepare()
     background = layer0:addEntity(BG_TEXTURE)
     background:setLocation(ww / 2, wh / 2)
     background:resizeTexture(ww, wh)
+
+    SoundManager.loadSound(JUMP_SOUND, JUMP_SOUND)
+    SoundManager.loadSound(WALLJUMP_SOUND, WALLJUMP_SOUND)
+
     player = layer1:addEntity(PLAYER_TEXTURE)
     player:setLocation(ww / 2, wh / 2)
 
@@ -71,4 +77,7 @@ end
 function cleanup()
     RenderManager.unloadTexture(PLAYER_TEXTURE)
     RenderManager.unloadTexture(BG_TEXTURE)
+    SoundManager.unloadSound(JUMP_SOUND)
+    SoundManager.unloadSound(WALLJUMP_SOUND)
+    SoundManager.gc()
 end

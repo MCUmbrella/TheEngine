@@ -9,6 +9,9 @@
 #include "RenderManager.h"
 #include "render/RenderEntity.h"
 #include "ConfigManager.h"
+#include "sound/SoundManager.h"
+
+using kaguya::UserdataMetatable;
 
 // this function is used in Lua scripts
 void LuaRuntime::log_l(const int& lvl, const string& msg)
@@ -31,9 +34,9 @@ void LuaRuntime::log_l(const string& msg)
     log_l(0, msg);
 }
 
-kaguya::State& LuaRuntime::getLua()
+State& LuaRuntime::getLua()
 {
-    static kaguya::State L;
+    static State L;
     return L;
 }
 
@@ -41,7 +44,7 @@ void LuaRuntime::init()
 {
     logInfo << "Initializing Lua runtime";
 
-    kaguya::State& l = getLua();
+    State& l = getLua();
     l.openlibs();
     l.setErrorHandler([](int status, const char* msg){
         throw LuaException(
@@ -55,7 +58,7 @@ void LuaRuntime::init()
 
     logInfo << "-- Runtime";
     l["Runtime"].setClass(
-        kaguya::UserdataMetatable<LuaRuntime>()
+        UserdataMetatable<LuaRuntime>()
             .addOverloadedFunctions(
                 "log",
                 static_cast<void (*)(const int&, const string&)>(log_l),
@@ -68,7 +71,7 @@ void LuaRuntime::init()
 
     logInfo << "-- Engine";
     l["Engine"].setClass(
-        kaguya::UserdataMetatable<Engine>()
+        UserdataMetatable<Engine>()
             .addStaticFunction("stop", [](){
                 logInfo << "Script called Engine.stop()";
                 Engine::stop();
@@ -82,7 +85,7 @@ void LuaRuntime::init()
 
     logInfo << "-- RenderManager";
     l["RenderManager"].setClass(
-        kaguya::UserdataMetatable<RenderManager>()
+        UserdataMetatable<RenderManager>()
             .addStaticFunction("getWindowWidth", &RenderManager::getWindowWidth)
             .addStaticFunction("getWindowHeight", &RenderManager::getWindowHeight)
             .addStaticFunction("setWindowSize", &RenderManager::setWindowSize)
@@ -106,7 +109,7 @@ void LuaRuntime::init()
 
     logInfo << "-- RenderEntity";
     l["RenderEntity"].setClass(
-        kaguya::UserdataMetatable<RenderEntity>()
+        UserdataMetatable<RenderEntity>()
             .addProperty("x", &RenderEntity::x)
             .addProperty("y", &RenderEntity::y)
             .addProperty("hitboxWidth", &RenderEntity::hitboxWidth)
@@ -130,7 +133,7 @@ void LuaRuntime::init()
     );
     logInfo << "-- RenderLayer";
     l["RenderLayer"].setClass(
-        kaguya::UserdataMetatable<RenderLayer>()
+        UserdataMetatable<RenderLayer>()
             .addFunction("getOrder", &RenderLayer::getOrder)
             .addFunction("addEntity", &RenderLayer::addEntity_l)
             .addFunction("removeEntity", &RenderLayer::removeEntity)
@@ -138,6 +141,17 @@ void LuaRuntime::init()
             .addFunction("hasEntity", &RenderLayer::hasEntity)
             .addFunction("size", &RenderLayer::size)
             .addFunction("clear", &RenderLayer::clear)
+    );
+
+    logInfo << "-- SoundManager";
+    l["SoundManager"].setClass(
+        UserdataMetatable<SoundManager>()
+            .addStaticFunction("loadSound", [](const string& name, const string& path) -> void{
+                SoundManager::loadSound(name, ConfigManager::getUserDataPath() + "/assets/sounds/" + path);
+            })
+            .addStaticFunction("unloadSound", &SoundManager::unloadSound)
+            .addStaticFunction("playSound", &SoundManager::playSound)
+            .addStaticFunction("gc", &SoundManager::gc)
     );
 
     logInfo << "Lua runtime initialization success";

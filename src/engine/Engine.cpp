@@ -10,6 +10,7 @@
 #include "LuaRuntime.h"
 #include "exception/LuaException.h"
 #include "ConfigManager.h"
+#include "sound/SoundManager.h"
 
 using std::bitset;
 
@@ -71,6 +72,7 @@ void Engine::init(const string& configPath)
         LuaRuntime::init();
         LuaRuntime::runFile(ConfigManager::getEngineDataPath() + "/data/lua/preInit.lua");
         RenderManager::init();
+        SoundManager::init();
         state = STOPPED;
         LuaRuntime::runFile(ConfigManager::getEngineDataPath() + "/data/lua/postInit.lua");
         logInfo << "The Engine is ready";
@@ -135,6 +137,7 @@ void Engine::mainLoop()
 
     logInfo << "Exited main loop";
     l["cleanup"]();
+    SoundManager::shutdown();
     RenderManager::shutdown();
     SDL_Quit();
     state = STOPPED;

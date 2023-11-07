@@ -9,6 +9,7 @@
 #include <string>
 
 using std::string;
+using kaguya::State;
 
 class LuaRuntime
 {
@@ -21,7 +22,7 @@ public:
     /**
      * Get the reference of the Lua state.
      */
-    static kaguya::State& getLua();
+    static State& getLua();
 
     /**
      * Initialize the Lua runtime.
