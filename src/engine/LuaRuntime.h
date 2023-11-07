@@ -13,9 +13,9 @@ using std::string;
 class LuaRuntime
 {
 private:
-    static void luaEngineLog(const int& lvl, const string& msg);
+    static void log_l(const int& lvl, const string& msg);
 
-    static void luaEngineLog(const string& msg);
+    static void log_l(const string& msg);
 
 public:
     /**

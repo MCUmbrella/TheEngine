@@ -107,6 +107,13 @@ void RenderManager::shutdown()
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     TTF_Quit();
+    if(loadedTextures.size() != 1)
+    {
+        logWarn << "WHO FORGOT TO UNLOAD TEXTURES?";
+        logWarn << "Loaded textures (" << loadedTextures.size() << "):";
+        for(auto& tp : loadedTextures)
+            logWarn << "-- " << tp.first;
+    }
     logInfo << "Render manager shutted down";
 }
 
@@ -212,7 +219,6 @@ SDL_Texture* RenderManager::loadTexture(const string& path)
     {
         loadedTextures[path] = texture;
     }
-    logInfo << "Texture list size: " << loadedTextures.size();
     return texture;
 }
 
@@ -237,7 +243,6 @@ bool RenderManager::unloadTexture(const string& path)
     }
     else // texture not found
         logWarn << "Trying to unload a texture that is not loaded: " << path;
-    logInfo << "Texture list size: " << loadedTextures.size();
     return unloaded;
 }
 
@@ -319,6 +324,8 @@ RenderLayer* RenderManager::addLayer(const int& order)
 
 void RenderManager::removeLayer(const int& order)
 {
+    if(order == 0)
+        throw EngineException("Layer 0 cannot be removed");
     if(!hasLayer(order))
         throw EngineException("Layer not found: " + to_string(order));
     layers.erase(order);
@@ -343,5 +350,5 @@ RenderLayer* RenderManager::reorderLayer(const int& src, const int& target)
         throw EngineException("Layer 0 cannot be reordered");
     if(src == target)
         throw EngineException("src and target in reorderLayer() cannot be the same: " + to_string(src));
-    return nullptr;
+    return &(layers.at(src));
 }

@@ -15,7 +15,6 @@ using std::bitset;
 
 static EngineState state = UNINITIALIZED;
 const static int TARGET_TPS = 60;
-const static int TPS_CORRECTION_FREQ = 10;
 const static long TICK_MAX_NS = 1000000000L / TARGET_TPS;
 static unsigned long tickCounter = 0;
 static bitset<1024> keysP{}; // pressed keys at a single tick (calculated at the end of pollSDLEvents)
@@ -64,7 +63,7 @@ void Engine::pollSDLEvents()
 
 void Engine::init(const string& configPath)
 {
-    if(getState() == UNINITIALIZED || getState() == STOPPED)
+    if(getState() == UNINITIALIZED)
     {
         logInfo << "Initializing";
         state = INITIALIZING;
@@ -72,21 +71,20 @@ void Engine::init(const string& configPath)
         LuaRuntime::init();
         LuaRuntime::runFile(ConfigManager::getEngineDataPath() + "/data/lua/preInit.lua");
         RenderManager::init();
-        logInfo << "Initialization OK";
         state = STOPPED;
         LuaRuntime::runFile(ConfigManager::getEngineDataPath() + "/data/lua/postInit.lua");
+        logInfo << "The Engine is ready";
     }
     else
     {
-        throw InvalidStateException("Can't initialize while The Engine is running");
+        throw InvalidStateException("The Engine is already initialized");
     }
 }
 
-void Engine::start()
+void Engine::run()
 {
     if(state == STOPPED)
     {
-        logInfo << "Starting The Engine";
         tickCounter = 0;
         state = RUNNING;
         mainLoop();
@@ -129,27 +127,17 @@ void Engine::mainLoop()
                     << " ns (should be <= " << TICK_MAX_NS << " ns)";
             goto label_1;
         }
-        // attempt to reduce time drift
-        static int64_t prevStartTime = -1, corr = 0;
-        if(tickCounter % (TARGET_TPS / TPS_CORRECTION_FREQ) == 0)
-        {
-            if(prevStartTime == -1)
-                prevStartTime = startTime;
-            else
-            {
-                int64_t expectedEndTime = prevStartTime + 1000000000L / TPS_CORRECTION_FREQ;
-                corr = (endTime - expectedEndTime) / (TARGET_TPS / TPS_CORRECTION_FREQ);
-                prevStartTime = startTime;
-            }
-        }
+
         label_1:
         ++tickCounter;
-        //SDL_Delay((delay - corr) / 1000000); // not accurate
-        std::this_thread::sleep_for(std::chrono::nanoseconds(delay - corr));
+        std::this_thread::sleep_for(std::chrono::nanoseconds(delay));
     }
-    l["cleanup"]();
 
     logInfo << "Exited main loop";
+    l["cleanup"]();
+    RenderManager::shutdown();
+    SDL_Quit();
+    state = STOPPED;
 }
 
 void Engine::stop()
@@ -158,9 +146,6 @@ void Engine::stop()
     {
         logInfo << "Stopping The Engine";
         state = STOPPING;
-        RenderManager::shutdown();
-        SDL_Quit();
-        state = STOPPED;
         logInfo << "Waiting for main loop to exit";
     }
     else

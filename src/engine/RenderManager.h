@@ -57,15 +57,36 @@ public:
 
     static void setWindowTitle(const string& title);
 
+    /**
+     * Add a render layer.
+     * @param order The order of the layer, from [INT_MIN, INT_MAX].
+     *              Layer 0 is automatically created.
+     * @return The pointer to the newly added layer.
+     * @throw EngineException if the layer with the specified order already exists.
+     */
     static RenderLayer* addLayer(const int& order);
 
+    /**
+     * Remove a render layer.
+     * @param order The order of the layer.
+     * @throw EngineException if no layer with this order was found or the order is 0.
+     */
     static void removeLayer(const int& order);
 
+    /**
+     * Get a layer by its order.
+     * @param order The order of the layer.
+     * @return The pointer to the layer with the specified order.
+     * @throw EngineException if no layer with this order was found.
+     */
     static RenderLayer* getLayer(const int& order);
 
+    /**
+     * Check if a layer with the specified order exists.
+     */
     static bool hasLayer(const int& order);
 
-    static RenderLayer* reorderLayer(const int& src, const int& target);
+    static RenderLayer* reorderLayer(const int& src, const int& target); //TODO
 
     /**
      * Get the width of a texture.

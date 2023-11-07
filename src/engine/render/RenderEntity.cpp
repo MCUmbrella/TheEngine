@@ -4,6 +4,7 @@
 
 #include "RenderEntity.h"
 #include "../RenderManager.h"
+#include "../ConfigManager.h"
 
 RenderEntity::RenderEntity(const int64_t& id, const string& texturePath) : id(id)
 {
@@ -30,7 +31,7 @@ void RenderEntity::move(const double& dx, const double& dy)
     y += dy;
 }
 
-void RenderEntity::setTextureLocation(const int& x_, const int& y_)
+void RenderEntity::setTextureOffset(const int& x_, const int& y_)
 {
     textureOffsetX = x_;
     textureOffsetY = y_;
@@ -57,4 +58,27 @@ void RenderEntity::resizeTexture(const int& tx, const int& ty)
 {
     textureWidth = tx;
     textureHeight = ty;
+}
+
+void RenderEntity::resetTextureSize()
+{
+    SDL_QueryTexture(sdlTexture, nullptr, nullptr, &textureWidth, &textureHeight);
+}
+
+void RenderEntity::resetHitboxSize()
+{
+    int _hitboxWidth, _hitboxHeight;
+    SDL_QueryTexture(sdlTexture, nullptr, nullptr, &_hitboxWidth, &_hitboxHeight);
+    hitboxWidth = _hitboxWidth;
+    hitboxHeight = _hitboxHeight;
+}
+
+void RenderEntity::changeTexture(const string& path)
+{
+    sdlTexture = RenderManager::getTexture(path);
+}
+
+void RenderEntity::changeTexture_l(const string& path)
+{
+    changeTexture(ConfigManager::getUserDataPath() + "/assets/textures/" + path);
 }

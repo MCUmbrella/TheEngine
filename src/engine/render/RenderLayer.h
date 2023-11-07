@@ -22,14 +22,17 @@ public:
     int getOrder();
 
     /**
-     * Add a new entity to the render entity buffer.
+     * Add a new entity to the layer.
      * @param texturePath The path of the texture that the entity used.
      * @return The pointer to the newly added entity.
      */
     RenderEntity* addEntity(const string& texturePath);
 
+    // this function is used in Lua scripts
+    RenderEntity* addEntity_l(const string& texturePath);
+
     /**
-     * Remove an entity from the render entity buffer.
+     * Remove an entity from the layer.
      * @param id The ID of the entity.
      * @return The copy of the removed entity.
      * @throw EngineException if the entity with this ID is not found.
@@ -51,10 +54,20 @@ public:
      */
     bool hasEntity(const int64_t& id);
 
+    /**
+     * Get the count of entities in this layer.
+     */
     size_t size();
 
+    /**
+     * Remove all entities in this layer.
+     */
     void clear();
 
+    /**
+     * Call RenderManager.placeTexture() to render all entities in this layer.
+     * Should only be called by RenderManager.render()
+     */
     void apply();
 };
 

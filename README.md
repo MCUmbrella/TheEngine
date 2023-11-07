@@ -12,6 +12,9 @@
 # Build
 The following instructions is recommended, but not the only way to build the program.
 ## Set up environment
+Recommended software:
+- CLion
+- Visual Studio Code
 ### Operating system
 Kubuntu 21.10
 ### /etc/apt/sources.list
@@ -41,7 +44,6 @@ rm -f ./cmake_install.cmake ./CMakeCache.txt ./Makefile ./TheEngine
 
 # TODO
 - statically link libsdl2 and liblua
-- RenderLayer.apply()
 - cursor
 - texture rotating
 - texture flipping, mirroring, etc.

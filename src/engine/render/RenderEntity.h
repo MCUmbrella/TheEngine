@@ -13,29 +13,31 @@ using std::string;
 class RenderEntity
 {
 public:
-    // the unique ID of the entity.
+    // The ID of the entity,
+    // assigned by RenderLayer.addEntity(String)
     const int64_t id;
 
-    // the pointer to the SDL texture used by the entity,
+    // The pointer to the entity's SDL texture,
     // assigned by RenderEntity.new(String)
     SDL_Texture* sdlTexture;
 
-    // the location on the screen
-    // (the center of the entity's hitbox)
+    // The location of the entity.
+    // This location is the center of the texture.
     double x = 0, y = 0;
 
-    // the actual width & height of the entity
-    int hitboxWidth = 0, hitboxHeight = 0;
+    // The 'actual' size of the entity.
+    // It's set to the same size as the initial
+    // texture and doesn't affect texture rendering.
+    double hitboxWidth = 0, hitboxHeight = 0;
 
-    // the texture size of the entity. can be stretched
+    // The size of the texture. changing the value
+    // will cause the texture to be stretched.
     int textureWidth = 0, textureHeight = 0;
 
-    // the texture location offset of the entity
-    // (calculated at the hitbox center)
+    // The position offset of the texture.
     int textureOffsetX = 0, textureOffsetY = 0;
 
-    // the texture's rotation
-    // (calculated at the hitbox center)
+    // The angle of the texture rotation.
     double textureDegree = 0;
 
     RenderEntity(const int64_t& id, const string& texturePath);
@@ -46,7 +48,7 @@ public:
 
     void move(const double& dx, const double& dy);
 
-    void setTextureLocation(const int& x_, const int& y_);
+    void setTextureOffset(const int& x_, const int& y_);
 
     void moveTexture(const int& dx, const int& dy);
 
@@ -55,6 +57,30 @@ public:
     void resizeHitbox(const int& hx, const int& hy);
 
     void resizeTexture(const int& tx, const int& ty);
+
+    /**
+     * Set the size of the texture to its actual
+     * size stored in the file.
+     */
+    void resetTextureSize();
+
+    /**
+     * Set the size of the entity's hitbox to
+     * the original size of entity's texture.
+     */
+    void resetHitboxSize();
+
+    /**
+     * Change the entity's texture.
+     * The size of the texture and hitbox will
+     * retain, if you want to update them, call
+     * resetTextureSize() and resetHitboxSize()
+     * @param path The path of the texture.
+     */
+    void changeTexture(const string& path);
+
+    // this function is used in Lua scripts
+    void changeTexture_l(const string& path);
 };
 
 #endif //THEENGINE_RENDERENTITY_H

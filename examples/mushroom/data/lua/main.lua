@@ -10,7 +10,7 @@ local wb = 127
 
 local player
 local playerId
-local PLAYER_TEXTURE = "the_game/assets/textures/entity/holy moly.png"
+local PLAYER_TEXTURE = "entity/holy moly.png"
 
 local spaceHoldingTicks = 0
 

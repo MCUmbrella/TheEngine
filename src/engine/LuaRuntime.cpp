@@ -8,9 +8,10 @@
 #include "Engine.h"
 #include "RenderManager.h"
 #include "render/RenderEntity.h"
+#include "ConfigManager.h"
 
 // this function is used in Lua scripts
-void LuaRuntime::luaEngineLog(const int& lvl, const string& msg)
+void LuaRuntime::log_l(const int& lvl, const string& msg)
 {
     switch(lvl)
     {
@@ -25,9 +26,9 @@ void LuaRuntime::luaEngineLog(const int& lvl, const string& msg)
     }
 }
 
-void LuaRuntime::luaEngineLog(const string& msg)
+void LuaRuntime::log_l(const string& msg)
 {
-    luaEngineLog(0, msg);
+    log_l(0, msg);
 }
 
 kaguya::State& LuaRuntime::getLua()
@@ -57,12 +58,11 @@ void LuaRuntime::init()
         kaguya::UserdataMetatable<LuaRuntime>()
             .addOverloadedFunctions(
                 "log",
-                static_cast<void (*)(const int&, const string&)>(luaEngineLog),
-                static_cast<void (*)(const string&)>(luaEngineLog)
+                static_cast<void (*)(const int&, const string&)>(log_l),
+                static_cast<void (*)(const string&)>(log_l)
             )
             .addStaticFunction("switchTo", [](const string& path){
-                logInfo << "Script called Runtime.switchTo()";
-                LuaRuntime::runFile(path);
+                LuaRuntime::runFile(ConfigManager::getUserDataPath() + "/data/lua/" + path);
             })
     );
 
@@ -92,8 +92,12 @@ void LuaRuntime::init()
             .addStaticFunction("getWindowX", &RenderManager::getWindowX)
             .addStaticFunction("getWindowY", &RenderManager::getWindowY)
             .addStaticFunction("setWindowLocation", &RenderManager::setWindowLocation)
-            .addStaticFunction("loadTexture", [](const string& path){RenderManager::loadTexture(path);})
-            .addStaticFunction("unloadTexture", &RenderManager::unloadTexture)
+            .addStaticFunction("loadTexture", [](const string& path){
+                RenderManager::loadTexture(ConfigManager::getUserDataPath() + "/assets/textures/" + path);
+            })
+            .addStaticFunction("unloadTexture", [](const string& path){
+                RenderManager::unloadTexture(ConfigManager::getUserDataPath() + "/assets/textures/" + path);
+            })
             .addStaticFunction("addLayer", &RenderManager::addLayer)
             .addStaticFunction("removeLayer", &RenderManager::removeLayer)
             .addStaticFunction("getLayer", &RenderManager::getLayer)
@@ -105,20 +109,30 @@ void LuaRuntime::init()
         kaguya::UserdataMetatable<RenderEntity>()
             .addProperty("x", &RenderEntity::x)
             .addProperty("y", &RenderEntity::y)
+            .addProperty("hitboxWidth", &RenderEntity::hitboxWidth)
+            .addProperty("hitboxHeight", &RenderEntity::hitboxHeight)
+            .addProperty("textureWidth", &RenderEntity::textureWidth)
+            .addProperty("textureHeight", &RenderEntity::textureHeight)
+            .addProperty("textureOffsetX", &RenderEntity::textureOffsetX)
+            .addProperty("textureOffsetY", &RenderEntity::textureOffsetY)
+            .addProperty("textureDegree", &RenderEntity::textureDegree)
             .addFunction("getId", &RenderEntity::getId)
             .addFunction("setLocation", &RenderEntity::setLocation)
             .addFunction("move", &RenderEntity::move)
-            .addFunction("setTextureLocation", &RenderEntity::setTextureLocation)
+            .addFunction("setTextureOffset", &RenderEntity::setTextureOffset)
             .addFunction("moveTexture", &RenderEntity::moveTexture)
             .addFunction("rotate", &RenderEntity::rotate)
             .addFunction("resizeHitbox", &RenderEntity::resizeHitbox)
             .addFunction("resizeTexture", &RenderEntity::resizeTexture)
+            .addFunction("resetTextureSize", &RenderEntity::resetTextureSize)
+            .addFunction("resetHitboxSize", &RenderEntity::resetHitboxSize)
+            .addFunction("changeTexture", &RenderEntity::changeTexture_l)
     );
     logInfo << "-- RenderLayer";
     l["RenderLayer"].setClass(
         kaguya::UserdataMetatable<RenderLayer>()
             .addFunction("getOrder", &RenderLayer::getOrder)
-            .addFunction("addEntity", &RenderLayer::addEntity)
+            .addFunction("addEntity", &RenderLayer::addEntity_l)
             .addFunction("removeEntity", &RenderLayer::removeEntity)
             .addFunction("getEntity", &RenderLayer::getEntity)
             .addFunction("hasEntity", &RenderLayer::hasEntity)
@@ -131,7 +145,7 @@ void LuaRuntime::init()
 
 bool LuaRuntime::runFile(const string& path, const bool& throws)
 {
-    logInfo << "Executing Lua script: " << path;
+//    logInfo << "Executing Lua script: " << path;
     bool success = false;
     try
     {

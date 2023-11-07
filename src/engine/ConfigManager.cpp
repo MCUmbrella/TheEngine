@@ -22,6 +22,8 @@ void ConfigManager::loadConfig(const string& path)
     else
         engineDataPath = "the_engine";
     userDataPath = j["userDataPath"];
+    logInfo << "Engine data: " << engineDataPath;
+    logInfo << "User data: " << userDataPath;
     logInfo << "Config loaded";
 }
 

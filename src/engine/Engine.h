@@ -39,7 +39,7 @@ public:
     /**
      * Start the Engine.
      */
-    static void start();
+    static void run();
 
     /**
      * Exit the main loop, release all resources and related components.

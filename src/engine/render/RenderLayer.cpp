@@ -6,6 +6,7 @@
 #include "../util/CommonUtil.h"
 #include "../exception/EngineException.h"
 #include "../RenderManager.h"
+#include "../ConfigManager.h"
 
 int RenderLayer::getOrder()
 {
@@ -20,6 +21,11 @@ RenderEntity* RenderLayer::addEntity(const string& texturePath)
     const auto& it = p.first;
     RenderEntity& e = it->second;
     return &e;
+}
+
+RenderEntity* RenderLayer::addEntity_l(const string& texturePath)
+{
+    return addEntity(ConfigManager::getUserDataPath() + "/assets/textures/" + texturePath);
 }
 
 RenderEntity RenderLayer::removeEntity(const int64_t& id)
@@ -56,8 +62,8 @@ void RenderLayer::apply()
         RenderEntity& re = rep.second;
         RenderManager::placeTexture(
             re.sdlTexture,
-            re.x - re.textureWidth / 2.0,
-            re.y - re.textureHeight / 2.0,
+            (re.x - re.textureWidth / 2.0) + re.textureOffsetX,
+            (re.y - re.textureHeight / 2.0) + re.textureOffsetY,
             re.textureWidth,
             re.textureHeight
         );
