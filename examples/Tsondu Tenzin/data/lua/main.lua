@@ -1,17 +1,19 @@
 local PLAYER_TEXTURE = "entity/dj.png"
 local BG_TEXTURE = "background/litang.jpg"
-JUMP_SOUND = "sfx/entity/dj/jump.wav"
-WALLJUMP_SOUND = "sfx/entity/dj/walljump.wav"
 local background
 local layer0
 local layer1
 local tt = 0
 
-function printPlayer()
+function printDebug()
+    Runtime.log("Tick: #" .. t)
     Runtime.log("ID: " .. player:getId())
     Runtime.log("Location: " .. player.x .. ", " .. player.y)
     Runtime.log("Hixbox size: " .. player.hitboxWidth .. " * " .. player.hitboxHeight)
     Runtime.log("Texture size: " .. player.textureWidth .. " * " .. player.textureHeight)
+    Runtime.log("texture upper-left location: " .. player.x - player.textureWidth / 2 .. ", " .. player.y - player.textureHeight / 2)
+    Runtime.log("texture bottom-right location: " .. player.x + player.textureWidth / 2 .. ", " .. player.y + player.textureHeight / 2)
+    Runtime.log("v: " .. vx .. ", " .. vy)
 end
 
 function prepare()
@@ -30,13 +32,11 @@ function prepare()
     background:setLocation(ww / 2, wh / 2)
     background:resizeTexture(ww, wh)
 
-    SoundManager.loadSound(JUMP_SOUND, JUMP_SOUND)
-    SoundManager.loadSound(WALLJUMP_SOUND, WALLJUMP_SOUND)
+    JUMP_SOUND = SoundManager.addSound("jump", "sfx/entity/dj/jump.wav")
+    WALLJUMP_SOUND = SoundManager.addSound("walljump", "sfx/entity/dj/walljump.wav")
 
     player = layer1:addEntity(PLAYER_TEXTURE)
     player:setLocation(ww / 2, wh / 2)
-
-    printPlayer()
 end
 
 function tick()
@@ -72,12 +72,17 @@ function tick()
     end
 
     Runtime.switchTo("playerMoveLogics.lua")
+
+    if Engine.keyPressed(60) or Engine.keyRepeated(60) -- F3
+    then
+        printDebug()
+    end
 end
 
 function cleanup()
     RenderManager.unloadTexture(PLAYER_TEXTURE)
     RenderManager.unloadTexture(BG_TEXTURE)
-    SoundManager.unloadSound(JUMP_SOUND)
-    SoundManager.unloadSound(WALLJUMP_SOUND)
+    SoundManager.removeSound(JUMP_SOUND:getName())
+    SoundManager.removeSound(WALLJUMP_SOUND:getName())
     SoundManager.gc()
 end

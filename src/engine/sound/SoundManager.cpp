@@ -59,7 +59,7 @@ void SoundManager::gc()
         return false;
     });
     logInfo << "GC completed";
-    logInfo << "Loaded sounds: " << mixChunks.size();
+    logInfo << "Remaining loaded sounds: " << mixChunks.size();
 }
 
 Mix_Chunk* SoundManager::loadMixChunk(const string& path)
@@ -98,17 +98,20 @@ bool SoundManager::hasMixChunk(const string& path)
     return mixChunks.contains(path);
 }
 
-Sound* SoundManager::loadSound(const string& name, const string& path)
+Sound* SoundManager::addSound(const string& name, const string& path)
 {
     if(hasSound(name)) // the sound with this name already exists
-    {
-        if(sounds.at(name).path == path) // same path, return directly
-            return &(sounds.at(name));
-        else // different path, reassign the file and return
-            return sounds.at(name).reassign(path);
-    }
+        throw EngineException(
+            "Sound \"" + name + "\" already exists (with the file \"" +
+            sounds.at(name).path + "\" assigned)"
+        );
     else // create
-        return &(sounds.emplace(name, Sound(name, path)).first->second);
+    {
+        auto rp = sounds.emplace(name, Sound(name, path));
+        auto& ep = rp.first;
+        Sound& s = ep->second;
+        return &s;
+    }
 }
 
 Sound* SoundManager::getSound(const string& name)
@@ -118,7 +121,7 @@ Sound* SoundManager::getSound(const string& name)
     return &(sounds.at(name));
 }
 
-void SoundManager::unloadSound(const string& name)
+void SoundManager::removeSound(const string& name)
 {
     if(!hasSound(name))
         throw EngineException("Sound not found: " + name);
@@ -130,10 +133,14 @@ bool SoundManager::hasSound(const string& name)
     return sounds.contains(name);
 }
 
-void SoundManager::playSound(const string& name)
+void SoundManager::playSound(const Sound* sound)
 {
-    auto sound = getSound(name);
     if(sound->mixChunk == nullptr)
         return;
     Mix_PlayChannel(-1, sound->mixChunk, false);
+}
+
+void SoundManager::playSound(const string& name)
+{
+    playSound(getSound(name));
 }

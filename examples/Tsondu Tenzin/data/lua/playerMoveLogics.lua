@@ -3,7 +3,7 @@ function playerOnTop()
 end
 
 function playerOnGround()
-    return player.y + player.hitboxHeight / 2 >= wh - 1
+    return player.y + player.hitboxHeight / 2 >= wh
 end
 
 function playerOnLeft()
@@ -11,7 +11,7 @@ function playerOnLeft()
 end
 
 function playerOnRight()
-    return player.x + player.hitboxWidth / 2 >= ww - 1
+    return player.x + player.hitboxWidth / 2 >= ww
 end
 
 vy = vy + G / 60
@@ -42,7 +42,7 @@ if Engine.keyHolding(44) -- SPACE
 then
     if playerOnGround() then -- ground jump
         vy = -5
-        SoundManager.playSound(JUMP_SOUND)
+        JUMP_SOUND:play()
     else
         if playerOnLeft() then -- wall jump
             vy = -5
@@ -51,7 +51,7 @@ then
         elseif playerOnRight() then
             vy = -5
             vx = -5
-            SoundManager.playSound(WALLJUMP_SOUND)
+            SoundManager.playSound(WALLJUMP_SOUND:getName())
         end
     end
 end
@@ -66,7 +66,7 @@ end
 
 if playerOnGround()
 then
-    player.y = wh - player.hitboxHeight / 2 - 1
+    player.y = wh - player.hitboxHeight / 2
     vy = 0
 end
 
@@ -78,6 +78,6 @@ end
 
 if playerOnRight()
 then
-    player.x = ww - player.hitboxWidth / 2 - 1
+    player.x = ww - player.hitboxWidth / 2
     vx = 0
 end

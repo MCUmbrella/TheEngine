@@ -146,12 +146,27 @@ void LuaRuntime::init()
     logInfo << "-- SoundManager";
     l["SoundManager"].setClass(
         UserdataMetatable<SoundManager>()
-            .addStaticFunction("loadSound", [](const string& name, const string& path) -> void{
-                SoundManager::loadSound(name, ConfigManager::getUserDataPath() + "/assets/sounds/" + path);
+            .addStaticFunction("addSound", [](const string& name, const string& path) -> Sound*{
+                return SoundManager::addSound(name, ConfigManager::getUserDataPath() + "/assets/sounds/" + path);
             })
-            .addStaticFunction("unloadSound", &SoundManager::unloadSound)
-            .addStaticFunction("playSound", &SoundManager::playSound)
+            .addStaticFunction("removeSound", &SoundManager::removeSound)
+            .addStaticFunction("getSound", &SoundManager::getSound)
+            .addStaticFunction("hasSound", &SoundManager::hasSound)
+            .addOverloadedFunctions(
+                "playSound",
+                static_cast<void (*)(const string&)>(&SoundManager::playSound),
+                static_cast<void (*)(const Sound*)>(&SoundManager::playSound)
+            )
             .addStaticFunction("gc", &SoundManager::gc)
+    );
+
+    logInfo << "-- Sound";
+    l["Sound"].setClass(
+        UserdataMetatable<Sound>()
+            .addFunction("getName", &Sound::getName)
+            .addFunction("getPath", &Sound::getPath)
+            .addFunction("reassign", &Sound::reassign)
+            .addFunction("play", &Sound::play)
     );
 
     logInfo << "Lua runtime initialization success";

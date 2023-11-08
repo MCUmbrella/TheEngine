@@ -11,10 +11,25 @@ Sound::Sound(const string& name, const string& path) : name(name), path(path)
                                                : SoundManager::loadMixChunk(path);
 }
 
+string Sound::getName()
+{
+    return name;
+}
+
+string Sound::getPath()
+{
+    return path;
+}
+
 Sound* Sound::reassign(const string& newPath)
 {
     path = newPath;
     mixChunk = SoundManager::hasMixChunk(path) ? SoundManager::getMixChunk(path)
                                                : SoundManager::loadMixChunk(path);
     return this;
+}
+
+void Sound::play()
+{
+    SoundManager::playSound(this);
 }

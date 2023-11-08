@@ -13,13 +13,33 @@ using std::string;
 class Sound
 {
 public:
-    const string& name;
+    const string name;
     string path;
     Mix_Chunk* mixChunk;
 
     Sound(const string& name, const string& path);
 
+    /**
+     * Get the name of the sound.
+     */
+    string getName();
+
+    /**
+     * Get the path of the file assigned to this sound.
+     */
+    string getPath();
+
+    /**
+     * Assign another loaded sound file to this Sound object.
+     * @param newPath The path of the new sound file. If the file with this path
+     * is not loaded, SoundManager.loadMixChunk() will be called automatically.
+     */
     Sound* reassign(const string& newPath);
+
+    /**
+     * Play the sound.
+     */
+    void play();
 };
 
 
