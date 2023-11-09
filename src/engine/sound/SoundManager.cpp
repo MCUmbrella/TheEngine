@@ -156,16 +156,16 @@ bool SoundManager::hasSound(const string& name)
     return sounds.contains(name);
 }
 
-void SoundManager::playSound(const Sound* sound)
+PlayingSound SoundManager::playSound(const Sound* sound)
 {
-    if(sound->mixChunk == nullptr)
-        return;
-    Mix_PlayChannel(-1, sound->mixChunk, false);
+    return sound->mixChunk == nullptr ?
+           PlayingSound(nullptr, -1) :
+           PlayingSound(sound->mixChunk, Mix_PlayChannel(-1, sound->mixChunk, false));
 }
 
-void SoundManager::playSound(const string& name)
+PlayingSound SoundManager::playSound(const string& name)
 {
-    playSound(getSound(name));
+    return playSound(getSound(name));
 }
 
 

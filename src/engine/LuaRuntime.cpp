@@ -153,8 +153,8 @@ void LuaRuntime::init()
             .addStaticFunction("hasSound", &SoundManager::hasSound)
             .addOverloadedFunctions(
                 "playSound",
-                static_cast<void (*)(const string&)>(&SoundManager::playSound),
-                static_cast<void (*)(const Sound*)>(&SoundManager::playSound)
+                static_cast<PlayingSound (*)(const string&)>(&SoundManager::playSound),
+                static_cast<PlayingSound (*)(const Sound*)>(&SoundManager::playSound)
             )
             .addStaticFunction("addMusic", [](const string& name, const string& path) -> Music*{
                 return SoundManager::addMusic(name, ConfigManager::getUserDataPath() + "/assets/sounds/" + path);
@@ -192,6 +192,15 @@ void LuaRuntime::init()
             .addFunction("pause", &Music::pause)
             .addFunction("resume", &Music::resume)
             .addFunction("stop", &Music::stop)
+    );
+
+    logInfo << "-- PlayingSound";
+    l["PlayingSound"].setClass(
+        UserdataMetatable<PlayingSound>()
+            .addFunction("pause", &PlayingSound::pause)
+            .addFunction("resume", &PlayingSound::resume)
+            .addFunction("stop", &PlayingSound::stop)
+            .addFunction("isValid", &PlayingSound::isValid)
     );
 
     logInfo << "Lua runtime initialization success";

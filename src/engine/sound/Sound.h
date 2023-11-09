@@ -7,6 +7,7 @@
 
 #include <string>
 #include <SDL2/SDL_mixer.h>
+#include "PlayingSound.h"
 
 using std::string;
 
@@ -41,8 +42,10 @@ public:
 
     /**
      * Play the sound.
+     * @return A PlayingSound object.
+     * @sa PlayingSound.h
      */
-    void play();
+    PlayingSound play();
 
     /**
      * Get a string that contains some information about this Sound object.

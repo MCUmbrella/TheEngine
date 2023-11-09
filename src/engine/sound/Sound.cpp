@@ -29,9 +29,9 @@ Sound* Sound::reassign(const string& newPath)
     return this;
 }
 
-void Sound::play()
+PlayingSound Sound::play()
 {
-    SoundManager::playSound(this);
+    return SoundManager::playSound(this);
 }
 
 string Sound::toString()

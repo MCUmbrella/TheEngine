@@ -9,6 +9,7 @@
 #include <SDL2/SDL_mixer.h>
 #include "Sound.h"
 #include "Music.h"
+#include "PlayingSound.h"
 
 using std::string;
 
@@ -119,15 +120,17 @@ public:
      * If the internal pointer of the sound is nullptr, this
      * function will not do anything.
      * @param sound The pointer to the Sound object.
+     * @return A PlayingSound object.
+     * @sa PlayingSound.h
      */
-    static void playSound(const Sound* sound);
+    static PlayingSound playSound(const Sound* sound);
 
     /**
      * Play a sound by its name.
      * @throw EngineException if the sound with the specified
      * name was not found.
      */
-    static void playSound(const string& name);
+    static PlayingSound playSound(const string& name);
 
     /*================================================
      *                     MUSIC

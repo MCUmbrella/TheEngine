@@ -32,8 +32,10 @@ function prepare()
     background:setLocation(ww / 2, wh / 2)
     background:resizeTexture(ww, wh)
 
-    JUMP_SOUND = SoundManager.addSound("jump", "sfx/entity/dj/jump.wav")
-    WALLJUMP_SOUND = SoundManager.addSound("walljump", "sfx/entity/dj/walljump.wav")
+    JUMP_SOUND = SoundManager.addSound("jump", "sfx/entity/dj/1.ogg")
+    WALLJUMP_SOUND = SoundManager.addSound("walljump", "sfx/entity/dj/5.ogg")
+    CTRL_SOUND = SoundManager.addSound("ctrl", "sfx/entity/dj/ltc.ogg")
+    SHIFT_SOUND = SoundManager.addSound("shift", "sfx/entity/dj/gm.ogg")
     BGM = SoundManager.addMusic("bgm", "music/bgm.ogg")
 
     player = layer1:addEntity(PLAYER_TEXTURE)
@@ -53,18 +55,29 @@ function tick()
 
     if Engine.keyHolding(224) -- LCTRL
     then
-        SoundManager.pauseMusic()
+        if playingCtrlSound == nil
+        then
+            playingCtrlSound = CTRL_SOUND:play()
+        end
         player:setTextureOffset(
                 math.floor(math.sin(t / 15) * 20),
                 math.floor(math.cos(t / 15) * 10)
         )
     else
+        if not (playingCtrlSound == nil)
+        then
+            playingCtrlSound:stop()
+            playingCtrlSound = nil
+        end
         player:setTextureOffset(0, 0)
     end
 
     if Engine.keyHolding(225) -- LSHIFT
     then
-        SoundManager.resumeMusic()
+        if playingShiftSound == nil
+        then
+            playingShiftSound = SHIFT_SOUND:play()
+        end
         tt = tt + 1
         local m = math.sin(tt / 15) * 10
         player:resizeTexture(
@@ -72,6 +85,11 @@ function tick()
                 math.floor(player.hitboxHeight + m * player.hitboxHeight / player.hitboxWidth)
         )
     else
+        if not (playingShiftSound == nil)
+        then
+            playingShiftSound:stop()
+            playingShiftSound = nil
+        end
         tt = 0
         player:resetTextureSize()
     end
@@ -91,6 +109,8 @@ function cleanup()
     RenderManager.unloadTexture(BG_TEXTURE)
     SoundManager.removeSound(JUMP_SOUND:getName())
     SoundManager.removeSound(WALLJUMP_SOUND:getName())
+    SoundManager.removeSound(CTRL_SOUND:getName())
+    SoundManager.removeSound(SHIFT_SOUND:getName())
     SoundManager.removeMusic(BGM:getName())
     SoundManager.gc()
 end
