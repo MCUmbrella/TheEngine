@@ -63,7 +63,7 @@ void LuaRuntime::init()
                 static_cast<void (*)(const int&, const string&)>(log_l),
                 static_cast<void (*)(const string&)>(log_l)
             )
-            .addStaticFunction("switchTo", [](const string& path){
+            .addStaticFunction("execute", [](const string& path){
                 LuaRuntime::runFile(ConfigManager::getUserDataPath() + "/data/lua/" + path);
             })
     );

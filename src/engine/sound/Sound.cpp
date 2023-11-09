@@ -38,5 +38,5 @@ string Sound::toString()
 {
     char a[32]{};
     sprintf(a, "%p", mixChunk);
-    return "Sound \"" + name + "\" (file=\"" + path + "\", &=" + a + ")";
+    return "Sound \"" + name + "\" (file: \"" + path + "\", &: " + a + ")";
 }

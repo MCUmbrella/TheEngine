@@ -94,7 +94,7 @@ function tick()
         player:resetTextureSize()
     end
 
-    Runtime.switchTo("playerMoveLogics.lua")
+    Runtime.execute("playerMoveLogics.lua")
 
     if Engine.keyPressed(60) or Engine.keyRepeated(60) -- F3
     then

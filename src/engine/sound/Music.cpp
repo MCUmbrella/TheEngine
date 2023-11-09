@@ -53,5 +53,5 @@ string Music::toString()
 {
     char a[32]{};
     sprintf(a, "%p", mixMusic);
-    return "Music \"" + name + "\" (file=\"" + path + "\", &=" + a + ")";
+    return "Music \"" + name + "\" (file: \"" + path + "\", &: " + a + ")";
 }
