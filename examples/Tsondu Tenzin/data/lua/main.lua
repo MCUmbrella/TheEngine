@@ -34,9 +34,12 @@ function prepare()
 
     JUMP_SOUND = SoundManager.addSound("jump", "sfx/entity/dj/jump.wav")
     WALLJUMP_SOUND = SoundManager.addSound("walljump", "sfx/entity/dj/walljump.wav")
+    BGM = SoundManager.addMusic("bgm", "music/bgm.ogg")
 
     player = layer1:addEntity(PLAYER_TEXTURE)
     player:setLocation(ww / 2, wh / 2)
+
+    SoundManager.playMusic(BGM)
 end
 
 function tick()
@@ -50,6 +53,7 @@ function tick()
 
     if Engine.keyHolding(224) -- LCTRL
     then
+        SoundManager.pauseMusic()
         player:setTextureOffset(
                 math.floor(math.sin(t / 15) * 20),
                 math.floor(math.cos(t / 15) * 10)
@@ -60,6 +64,7 @@ function tick()
 
     if Engine.keyHolding(225) -- LSHIFT
     then
+        SoundManager.resumeMusic()
         tt = tt + 1
         local m = math.sin(tt / 15) * 10
         player:resizeTexture(
@@ -75,14 +80,17 @@ function tick()
 
     if Engine.keyPressed(60) or Engine.keyRepeated(60) -- F3
     then
+        SoundManager.playMusic(BGM)
         printDebug()
     end
 end
 
 function cleanup()
+    BGM:stop()
     RenderManager.unloadTexture(PLAYER_TEXTURE)
     RenderManager.unloadTexture(BG_TEXTURE)
     SoundManager.removeSound(JUMP_SOUND:getName())
     SoundManager.removeSound(WALLJUMP_SOUND:getName())
+    SoundManager.removeMusic(BGM:getName())
     SoundManager.gc()
 end

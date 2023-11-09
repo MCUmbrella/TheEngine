@@ -24,6 +24,12 @@ const SoundManager& SoundManager::getInstance()
     return THE_SOUND_MANAGER;
 }
 
+
+/*================================================
+ *                    MANAGER
+ ================================================*/
+
+
 void SoundManager::init()
 {
     logInfo << "Initializing sound manager";
@@ -42,8 +48,7 @@ void SoundManager::shutdown()
 
 void SoundManager::gc()
 {
-    logInfo << "Performing GC";
-    logInfo << "Loaded sounds: " << mixChunks.size();
+    logInfo << "Performing GC... Loaded sounds: " << mixChunks.size() << ", loaded musics: " << mixMusics.size();
     erase_if(mixChunks, [&](auto& p) -> bool{
         int uses = 0;
         for(auto& sound : sounds)
@@ -51,16 +56,35 @@ void SoundManager::gc()
                 ++uses;
         if(uses == 0)
         {
-            logInfo << "Remove \"" << p.first << "\" (&: " << p.second << ")";
+            logInfo << "Unloaded sound \"" << p.first << "\" (&: " << p.second << ")";
             if(p.second != nullptr)
                 Mix_FreeChunk(p.second);
             return true;
         }
         return false;
     });
-    logInfo << "GC completed";
-    logInfo << "Remaining loaded sounds: " << mixChunks.size();
+    erase_if(mixMusics, [&](auto& p) -> bool{
+        int uses = 0;
+        for(auto& music : musics)
+            if(music.second.mixMusic == p.second)
+                ++uses;
+        if(uses == 0)
+        {
+            logInfo << "Unloaded music \"" << p.first << "\" (&: " << p.second << ")";
+            if(p.second != nullptr)
+                Mix_FreeMusic(p.second);
+            return true;
+        }
+        return false;
+    });
+    logInfo << "GC completed. Remaining loaded sounds: " << mixChunks.size() << ", loaded musics: " << mixMusics.size();
 }
+
+
+/*================================================
+ *                     SOUND
+ ================================================*/
+
 
 Mix_Chunk* SoundManager::loadMixChunk(const string& path)
 {
@@ -101,15 +125,13 @@ bool SoundManager::hasMixChunk(const string& path)
 Sound* SoundManager::addSound(const string& name, const string& path)
 {
     if(hasSound(name)) // the sound with this name already exists
-        throw EngineException(
-            "Sound \"" + name + "\" already exists (with the file \"" +
-            sounds.at(name).path + "\" assigned)"
-        );
+        throw EngineException(sounds.at(name).toString() + " already exists");
     else // create
     {
         auto rp = sounds.emplace(name, Sound(name, path));
         auto& ep = rp.first;
         Sound& s = ep->second;
+        logInfo << "Added " << s.toString();
         return &s;
     }
 }
@@ -123,6 +145,7 @@ Sound* SoundManager::getSound(const string& name)
 
 void SoundManager::removeSound(const string& name)
 {
+    logInfo << "Removing sound: " << name;
     if(!hasSound(name))
         throw EngineException("Sound not found: " + name);
     sounds.erase(name);
@@ -143,4 +166,106 @@ void SoundManager::playSound(const Sound* sound)
 void SoundManager::playSound(const string& name)
 {
     playSound(getSound(name));
+}
+
+
+/*================================================
+ *                     MUSIC
+ ================================================*/
+
+
+Mix_Music* SoundManager::loadMixMusic(const string& path)
+{
+    if(hasMixMusic(path))
+        return mixMusics[path];
+    logInfo << "Loading music file: " << path;
+    Mix_Music* p = Mix_LoadMUS(path.c_str());
+    if(p == nullptr)
+        logError << "Failed to load music file \"" << path << "\": " << SDL_GetError();
+    mixMusics.emplace(path, p);
+    return p;
+}
+
+Mix_Music* SoundManager::getMixMusic(const string& path)
+{
+    if(hasMixMusic(path))
+        return mixMusics[path];
+    throw EngineException("Music file not loaded: " + path);
+}
+
+void SoundManager::unloadMixMusic(const string& path)
+{
+    logInfo << "Unloading music file: " << path;
+    if(hasMixMusic(path))
+    {
+        if(mixMusics[path] != nullptr)
+            Mix_FreeMusic(mixMusics[path]);
+        mixMusics.erase(path);
+    }
+    throw EngineException("Music file not loaded: " + path);
+}
+
+bool SoundManager::hasMixMusic(const string& path)
+{
+    return mixMusics.contains(path);
+}
+
+Music* SoundManager::addMusic(const string& name, const string& path)
+{
+    if(hasMusic(name))
+        throw EngineException(musics.at(name).toString() + " already exists");
+    else
+    {
+        auto rp = musics.emplace(name, Music(name, path));
+        auto& ep = rp.first;
+        Music& m = ep->second;
+        logInfo << "Added " << m.toString();
+        return &m;
+    }
+}
+
+Music* SoundManager::getMusic(const string& name)
+{
+    if(!hasMusic(name))
+        throw EngineException("Music not found: " + name);
+    return &(musics.at(name));
+}
+
+void SoundManager::removeMusic(const string& name)
+{
+    logInfo << "Removing music: " << name;
+    if(!hasMusic(name))
+        throw EngineException("Music not found: " + name);
+    musics.erase(name);
+}
+
+bool SoundManager::hasMusic(const string& name)
+{
+    return musics.contains(name);
+}
+
+void SoundManager::playMusic(const Music* music)
+{
+    if(music->mixMusic != nullptr)
+        Mix_PlayMusic(music->mixMusic, -1);
+}
+
+void SoundManager::playMusic(const string& name)
+{
+    playMusic(getMusic(name));
+}
+
+void SoundManager::pauseMusic()
+{
+    Mix_PauseMusic();
+}
+
+void SoundManager::resumeMusic()
+{
+    Mix_ResumeMusic();
+}
+
+void SoundManager::stopMusic()
+{
+    Mix_HaltMusic();
 }

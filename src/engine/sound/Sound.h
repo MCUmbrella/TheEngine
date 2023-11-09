@@ -10,6 +10,9 @@
 
 using std::string;
 
+/**
+ * The wrapper class for SDL sound struct (Mix_Chunk).
+ */
 class Sound
 {
 public:
@@ -40,6 +43,11 @@ public:
      * Play the sound.
      */
     void play();
+
+    /**
+     * Get a string that contains some information about this Sound object.
+     */
+    string toString();
 };
 
 

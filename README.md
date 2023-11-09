@@ -49,5 +49,4 @@ rm -f ./cmake_install.cmake ./CMakeCache.txt ./Makefile ./TheEngine
 - texture flipping, mirroring, etc.
 - text rendering
 - custom fonts
-- SoundManager
 - saves management

@@ -9,6 +9,7 @@
 #include "../exception/EngineException.h"
 #include "RenderLayer.h"
 #include "../ConfigManager.h"
+#include "../exception/IllegalArgumentException.h"
 
 using std::to_string;
 
@@ -58,17 +59,9 @@ void RenderManager::init()
 
     // initialize sdl
     if(SDL_Init(SDL_INIT_VIDEO) < 0)
-    {
-        logError << "Failed to initialize SDL!";
-        logError << SDL_GetError();
-        throw EngineException("RenderManager initialization failed");
-    }
+        throw EngineException(string("SDL initialization failed: ") + SDL_GetError());
     if(TTF_Init() < 0)
-    {
-        logError << "Failed to initialize SDL-TTF!";
-        logError << SDL_GetError();
-        throw EngineException("RenderManager initialization failed");
-    }
+        throw EngineException(string("SDL TTF initialization failed: ") + SDL_GetError());
 
     // create window and sdl renderer
     logInfo << "Creating window";
@@ -327,7 +320,7 @@ RenderLayer* RenderManager::addLayer(const int& order)
 void RenderManager::removeLayer(const int& order)
 {
     if(order == 0)
-        throw EngineException("Layer 0 cannot be removed");
+        throw IllegalArgumentException("Layer 0 cannot be removed");
     if(!hasLayer(order))
         throw EngineException("Layer not found: " + to_string(order));
     layers.erase(order);
@@ -349,8 +342,8 @@ bool RenderManager::hasLayer(const int& order)
 RenderLayer* RenderManager::reorderLayer(const int& src, const int& target)
 {
     if(src == 0 || target == 0)
-        throw EngineException("Layer 0 cannot be reordered");
+        throw IllegalArgumentException("Layer 0 cannot be reordered");
     if(src == target)
-        throw EngineException("src and target in reorderLayer() cannot be the same: " + to_string(src));
+        throw IllegalArgumentException("src and target in reorderLayer() cannot be the same: " + to_string(src));
     return &(layers.at(src));
 }

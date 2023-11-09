@@ -6,9 +6,8 @@
 #include "util/Logger.h"
 #include "exception/LuaException.h"
 #include "Engine.h"
-#include "render/RenderManager.h"
-#include "render/RenderEntity.h"
 #include "ConfigManager.h"
+#include "render/RenderManager.h"
 #include "sound/SoundManager.h"
 
 using kaguya::UserdataMetatable;
@@ -157,6 +156,20 @@ void LuaRuntime::init()
                 static_cast<void (*)(const string&)>(&SoundManager::playSound),
                 static_cast<void (*)(const Sound*)>(&SoundManager::playSound)
             )
+            .addStaticFunction("addMusic", [](const string& name, const string& path) -> Music*{
+                return SoundManager::addMusic(name, ConfigManager::getUserDataPath() + "/assets/sounds/" + path);
+            })
+            .addStaticFunction("removeMusic", &SoundManager::removeMusic)
+            .addStaticFunction("getMusic", &SoundManager::getMusic)
+            .addStaticFunction("hasMusic", &SoundManager::hasMusic)
+            .addOverloadedFunctions(
+                "playMusic",
+                static_cast<void (*)(const string&)>(&SoundManager::playMusic),
+                static_cast<void (*)(const Music*)>(&SoundManager::playMusic)
+            )
+            .addStaticFunction("pauseMusic", &SoundManager::pauseMusic)
+            .addStaticFunction("resumeMusic", &SoundManager::resumeMusic)
+            .addStaticFunction("stopMusic", &SoundManager::stopMusic)
             .addStaticFunction("gc", &SoundManager::gc)
     );
 
@@ -167,6 +180,18 @@ void LuaRuntime::init()
             .addFunction("getPath", &Sound::getPath)
             .addFunction("reassign", &Sound::reassign)
             .addFunction("play", &Sound::play)
+    );
+
+    logInfo << "-- Music";
+    l["Music"].setClass(
+        UserdataMetatable<Music>()
+            .addFunction("getName", &Music::getName)
+            .addFunction("getPath", &Music::getPath)
+            .addFunction("reassign", &Music::reassign)
+            .addFunction("play", &Music::play)
+            .addFunction("pause", &Music::pause)
+            .addFunction("resume", &Music::resume)
+            .addFunction("stop", &Music::stop)
     );
 
     logInfo << "Lua runtime initialization success";
