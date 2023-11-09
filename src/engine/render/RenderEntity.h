@@ -42,6 +42,8 @@ public:
 
     SDL_RendererFlip flip = SDL_FLIP_NONE;
 
+    SDL_Rect cropRect{};
+
     RenderEntity(const int64_t& id, const string& texturePath);
 
     int64_t getId();
@@ -61,22 +63,20 @@ public:
     void resizeTexture(const int& tx, const int& ty);
 
     /**
-     * Set the size of the texture to its actual
-     * size stored in the file.
+     * Set the size of the texture to its actual size stored in the file.
      */
     void resetTextureSize();
 
     /**
-     * Set the size of the entity's hitbox to
-     * the original size of entity's texture.
+     * Set the size of the entity's hitbox to the original size of entity's texture.
      */
     void resetHitboxSize();
 
     /**
      * Change the entity's texture.
-     * The size of the texture and hitbox will
-     * retain, if you want to update them, call
-     * resetTextureSize() and resetHitboxSize()
+     * The size of the texture and hitbox will retain, if you want to update them,
+     * call resetTextureSize() and resetHitboxSize().
+     * The texture cropping state will be reset.
      * @param path The path of the texture.
      */
     void changeTexture(const string& path);
@@ -95,6 +95,26 @@ public:
      * @param mode 0: none, 1: horizontal, 2: vertical.
      */
     void setFlip(int mode);
+
+    /**
+     * Crop the entity's texture to a specified size.
+     * A single entity's crop state doesn't affect other entities that uses the same
+     * texture. If the cropping area has part out of the original texture, the
+     * behavior is undefined.
+     * (Trick: set startX&Y to non-zero and dx&y to zero makes the entity invisible)
+     * @param startX The X coordinate of the crop start point.
+     * @param startY The Y coordinate of the crop start point.
+     * @param dx The width of the cropped area that the texture should be cropped to.
+     * @param dy The height of the cropped area that the texture should be cropped to.
+     * @throw IllegalArgumentException if startX/startY/dx/dy < 0
+     */
+    void setCrop(const int& startX, const int& startY, const int& dx, const int& dy);
+
+    /**
+     * Reset the entity texture's cropping state.
+     * Equals to setCrop(0, 0, 0, 0)
+     */
+    void resetCrop();
 };
 
 #endif //THEENGINE_RENDERENTITY_H

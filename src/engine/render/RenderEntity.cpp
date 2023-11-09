@@ -5,6 +5,7 @@
 #include "RenderEntity.h"
 #include "RenderManager.h"
 #include "../ConfigManager.h"
+#include "../exception/IllegalArgumentException.h"
 
 RenderEntity::RenderEntity(const int64_t& id, const string& texturePath) : id(id)
 {
@@ -76,6 +77,7 @@ void RenderEntity::resetHitboxSize()
 void RenderEntity::changeTexture(const string& path)
 {
     sdlTexture = RenderManager::getTexture(path);
+    resetCrop();
 }
 
 void RenderEntity::changeTexture_l(const string& path)
@@ -95,4 +97,19 @@ void RenderEntity::setFlip(int mode)
     flip = mode == 2 ? SDL_FLIP_VERTICAL :
            mode == 1 ? SDL_FLIP_HORIZONTAL :
            SDL_FLIP_NONE;
+}
+
+void RenderEntity::setCrop(const int& startX, const int& startY, const int& dx, const int& dy)
+{
+    if(startX < 0 || startY < 0 || dx < 0 || dy < 0)
+        throw IllegalArgumentException("Invalid coordinate or width/height in RenderEntity.setCrop()");
+    cropRect.x = startX;
+    cropRect.y = startY;
+    cropRect.w = dx;
+    cropRect.h = dy;
+}
+
+void RenderEntity::resetCrop()
+{
+    memset(&cropRect, 0, sizeof(cropRect));
 }

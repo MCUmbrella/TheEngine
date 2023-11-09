@@ -262,7 +262,7 @@ void RenderManager::placeTexture(RenderEntity& re)
     SDL_RenderCopyExF(
         renderer,
         re.sdlTexture,
-        nullptr,
+        (re.cropRect.x | re.cropRect.y | re.cropRect.w | re.cropRect.h) ? &re.cropRect : nullptr,
         &destRect,
         re.textureDegree,
         nullptr,

@@ -131,6 +131,8 @@ void LuaRuntime::init()
             .addFunction("changeTexture", &RenderEntity::changeTexture_l)
             .addFunction("getFlip", &RenderEntity::getFlip)
             .addFunction("setFlip", &RenderEntity::setFlip)
+            .addFunction("setCrop", &RenderEntity::setCrop)
+            .addFunction("resetCrop", &RenderEntity::resetCrop)
     );
     logInfo << "-- RenderLayer";
     l["RenderLayer"].setClass(
