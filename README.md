@@ -45,8 +45,6 @@ rm -f ./cmake_install.cmake ./CMakeCache.txt ./Makefile ./TheEngine
 # TODO
 - statically link libsdl2 and liblua
 - cursor
-- texture rotating
-- texture flipping, mirroring, etc.
 - text rendering
 - custom fonts
 - saves management

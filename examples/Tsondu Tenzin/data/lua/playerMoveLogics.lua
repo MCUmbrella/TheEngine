@@ -18,12 +18,14 @@ vy = vy + G / 60
 
 if Engine.keyHolding(4) -- A
 then
+    player:setFlip(1)
     if vx > -5
     then
         vx = vx - 0.5
     end
 elseif Engine.keyHolding(7) -- D
 then
+    player:setFlip(0)
     if vx < 5
     then
         vx = vx + 0.5

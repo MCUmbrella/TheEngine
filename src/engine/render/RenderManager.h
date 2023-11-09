@@ -123,20 +123,10 @@ public:
     static SDL_Texture* getTexture(const string& path);
 
     /**
-     * Stretch and place a texture on the screen.
-     * @param texture The pointer to the texture.
-     * @param x The X position of the upper-left corner of the texture.
-     * @param y The Y position of the upper-left corner of the texture.
-     * @param width The width that the texture needs to be stretched to.
-     * @param height The height that the texture needs to be stretched to.
+     * Place a RenderEntity object on the screen.
+     * @param re The reference to the RenderEntity object.
      */
-    static void placeTexture(SDL_Texture* texture, const int& x, const int& y, const int& width, const int& height);
-
-    /**
-     * Place a texture on the screen.
-     * @param texture The pointer to the texture.
-     */
-    static void placeTexture(SDL_Texture* texture, const int& x, const int& y);
+    static void placeTexture(RenderEntity& re);
 
     /**
      * Convert a text to the texture object.

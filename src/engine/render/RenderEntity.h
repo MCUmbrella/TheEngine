@@ -40,6 +40,8 @@ public:
     // The angle of the texture rotation.
     double textureDegree = 0;
 
+    SDL_RendererFlip flip = SDL_FLIP_NONE;
+
     RenderEntity(const int64_t& id, const string& texturePath);
 
     int64_t getId();
@@ -81,6 +83,18 @@ public:
 
     // this function is used in Lua scripts
     void changeTexture_l(const string& path);
+
+    /**
+     * Get the mode of the texture's flip.
+     * @return 0: none, 1: horizontal, 2: vertical.
+     */
+    int getFlip();
+
+    /**
+     * Get the mode of the texture's flip.
+     * @param mode 0: none, 1: horizontal, 2: vertical.
+     */
+    void setFlip(int mode);
 };
 
 #endif //THEENGINE_RENDERENTITY_H

@@ -60,13 +60,7 @@ void RenderLayer::apply()
     for(auto& rep : renderEntities)
     {
         RenderEntity& re = rep.second;
-        RenderManager::placeTexture(
-            re.sdlTexture,
-            (re.x - re.textureWidth / 2.0) + re.textureOffsetX,
-            (re.y - re.textureHeight / 2.0) + re.textureOffsetY,
-            re.textureWidth,
-            re.textureHeight
-        );
+        RenderManager::placeTexture(re);
     }
 }
 

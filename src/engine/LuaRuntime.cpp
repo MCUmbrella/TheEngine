@@ -129,6 +129,8 @@ void LuaRuntime::init()
             .addFunction("resetTextureSize", &RenderEntity::resetTextureSize)
             .addFunction("resetHitboxSize", &RenderEntity::resetHitboxSize)
             .addFunction("changeTexture", &RenderEntity::changeTexture_l)
+            .addFunction("getFlip", &RenderEntity::getFlip)
+            .addFunction("setFlip", &RenderEntity::setFlip)
     );
     logInfo << "-- RenderLayer";
     l["RenderLayer"].setClass(

@@ -94,6 +94,15 @@ function tick()
         player:resetTextureSize()
     end
 
+    if Engine.keyHolding(80) -- ARROW LEFT
+    then
+        player:rotate(-0.1)
+    end
+    if Engine.keyHolding(79) -- ARROW RIGHT
+    then
+        player:rotate(0.1)
+    end
+
     Runtime.execute("playerMoveLogics.lua")
 
     if Engine.keyPressed(60) or Engine.keyRepeated(60) -- F3

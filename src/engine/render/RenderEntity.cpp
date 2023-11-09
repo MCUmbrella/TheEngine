@@ -82,3 +82,17 @@ void RenderEntity::changeTexture_l(const string& path)
 {
     changeTexture(ConfigManager::getUserDataPath() + "/assets/textures/" + path);
 }
+
+int RenderEntity::getFlip()
+{
+    return flip == SDL_FLIP_VERTICAL ? 2 :
+           flip == SDL_FLIP_HORIZONTAL ? 1 :
+           0;
+}
+
+void RenderEntity::setFlip(int mode)
+{
+    flip = mode == 2 ? SDL_FLIP_VERTICAL :
+           mode == 1 ? SDL_FLIP_HORIZONTAL :
+           SDL_FLIP_NONE;
+}

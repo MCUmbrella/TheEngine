@@ -252,25 +252,22 @@ SDL_Texture* RenderManager::getTexture(const string& path)
     }
 }
 
-void RenderManager::placeTexture(SDL_Texture* texture, const int& x, const int& y, const int& width, const int& height)
+void RenderManager::placeTexture(RenderEntity& re)
 {
-    if(texture == nullptr) throw EngineException("Null pointer passed to placeTexture()");
-    SDL_Rect destRect;
-    destRect.x = x;
-    destRect.y = y;
-    destRect.w = width;
-    destRect.h = height;
-    SDL_RenderCopy(renderer, texture, nullptr, &destRect);
-}
-
-void RenderManager::placeTexture(SDL_Texture* texture, const int& x, const int& y)
-{
-    if(texture == nullptr) throw EngineException("Null pointer passed to placeTexture()");
-    SDL_Rect destRect;
-    destRect.x = x;
-    destRect.y = y;
-    SDL_QueryTexture(texture, nullptr, nullptr, &destRect.w, &destRect.h);
-    SDL_RenderCopy(renderer, texture, nullptr, &destRect);
+    SDL_FRect destRect;
+    destRect.x = (re.x - re.textureWidth / 2.0) + re.textureOffsetX;
+    destRect.y = (re.y - re.textureHeight / 2.0) + re.textureOffsetY;
+    destRect.w = re.textureWidth;
+    destRect.h = re.textureHeight;
+    SDL_RenderCopyExF(
+        renderer,
+        re.sdlTexture,
+        nullptr,
+        &destRect,
+        re.textureDegree,
+        nullptr,
+        re.flip
+    );
 }
 
 SDL_Texture* RenderManager::text2Texture(
