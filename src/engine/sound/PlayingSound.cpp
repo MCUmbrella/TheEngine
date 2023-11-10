@@ -5,7 +5,14 @@
 #include "PlayingSound.h"
 
 PlayingSound::PlayingSound(Mix_Chunk* mixChunk, const int& channelId) : mixChunk(mixChunk), channelId(channelId)
-{}
+{
+    setVolume(128);
+}
+
+bool PlayingSound::isValid()
+{
+    return mixChunk != nullptr && Mix_GetChunk(channelId) == mixChunk;
+}
 
 void PlayingSound::pause()
 {
@@ -28,7 +35,16 @@ void PlayingSound::stop()
     }
 }
 
-bool PlayingSound::isValid()
+int PlayingSound::getVolume()
 {
-    return mixChunk != nullptr && Mix_GetChunk(channelId) == mixChunk;
+    if(isValid())
+        return Mix_Volume(channelId, -1);
+    return -1;
+}
+
+int PlayingSound::setVolume(const int& vol)
+{
+    if(isValid())
+        return Mix_Volume(channelId, vol);
+    return -1;
 }

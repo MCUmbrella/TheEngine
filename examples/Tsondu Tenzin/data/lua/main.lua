@@ -47,12 +47,21 @@ end
 function tick()
     t = Engine.currentTick()
 
+    -- exit
     if Engine.keyPressed(41) -- ESC
     then
         Engine.stop()
         return
     end
 
+    -- print debug info
+    if Engine.keyPressed(60) or Engine.keyRepeated(60) -- F3
+    then
+        SoundManager.playMusic(BGM)
+        printDebug()
+    end
+
+    -- texture offset demo
     if Engine.keyHolding(224) -- LCTRL
     then
         if playingCtrlSound == nil
@@ -72,6 +81,7 @@ function tick()
         player:setTextureOffset(0, 0)
     end
 
+    -- texture resizing demo
     if Engine.keyHolding(225) -- LSHIFT
     then
         if playingShiftSound == nil
@@ -94,6 +104,7 @@ function tick()
         player:resetTextureSize()
     end
 
+    -- texture rotation demo
     if Engine.keyHolding(80) -- ARROW LEFT
     then
         player:rotate(-0.1)
@@ -103,13 +114,17 @@ function tick()
         player:rotate(0.1)
     end
 
-    Runtime.execute("playerMoveLogics.lua")
-
-    if Engine.keyPressed(60) or Engine.keyRepeated(60) -- F3
+    -- music volume adjustment
+    if Engine.keyHolding(82) -- ARROW UP
     then
-        SoundManager.playMusic(BGM)
-        printDebug()
+        SoundManager.musicVolume(SoundManager.musicVolume() + 1)
     end
+    if Engine.keyHolding(81) -- ARROW DOWN
+    then
+        SoundManager.musicVolume(SoundManager.musicVolume() - 1)
+    end
+
+    Runtime.execute("playerMoveLogics.lua")
 end
 
 function cleanup()

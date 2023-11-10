@@ -132,6 +132,6 @@ bool CommonUtil::isHexagonal(const string& s)
 
 int64_t CommonUtil::snowflakeId()
 {
-    static auto s = snowflake<1698977683L, std::mutex>(1, 1);
+    static auto s = snowflake<1697456461L, std::mutex>(1, 1);
     return s.nextid();
 }

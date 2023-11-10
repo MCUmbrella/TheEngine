@@ -221,6 +221,19 @@ public:
      * If there's no music played, do nothing.
      */
     static void stopMusic();
+
+    /**
+     * Get the volume of the music.
+     * @return The current volume of the music.
+     */
+    static int getMusicVolume();
+
+    /**
+     * Set the volume of the music.
+     * @param vol 0 (silent) to 128 (max)
+     * @return The new volume.
+     */
+    static int setMusicVolume(int vol);
 };
 
 #endif //THEENGINE_SOUNDMANAGER_H

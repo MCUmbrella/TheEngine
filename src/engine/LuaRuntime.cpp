@@ -174,6 +174,11 @@ void LuaRuntime::init()
             .addStaticFunction("pauseMusic", &SoundManager::pauseMusic)
             .addStaticFunction("resumeMusic", &SoundManager::resumeMusic)
             .addStaticFunction("stopMusic", &SoundManager::stopMusic)
+            .addOverloadedFunctions(
+                "musicVolume",
+                &SoundManager::getMusicVolume,
+                &SoundManager::setMusicVolume
+            )
             .addStaticFunction("gc", &SoundManager::gc)
     );
 
@@ -201,10 +206,15 @@ void LuaRuntime::init()
     logInfo << "-- PlayingSound";
     l["PlayingSound"].setClass(
         UserdataMetatable<PlayingSound>()
+            .addFunction("isValid", &PlayingSound::isValid)
             .addFunction("pause", &PlayingSound::pause)
             .addFunction("resume", &PlayingSound::resume)
             .addFunction("stop", &PlayingSound::stop)
-            .addFunction("isValid", &PlayingSound::isValid)
+            .addOverloadedFunctions(
+                "volume",
+                &PlayingSound::getVolume,
+                &PlayingSound::setVolume
+            )
     );
 
     logInfo << "Lua runtime initialization success";

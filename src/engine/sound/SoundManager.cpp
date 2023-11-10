@@ -269,3 +269,13 @@ void SoundManager::stopMusic()
 {
     Mix_HaltMusic();
 }
+
+int SoundManager::getMusicVolume()
+{
+    return Mix_VolumeMusic(-1);
+}
+
+int SoundManager::setMusicVolume(int vol)
+{
+    return Mix_VolumeMusic(vol);
+}
