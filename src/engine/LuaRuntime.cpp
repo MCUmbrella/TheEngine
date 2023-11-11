@@ -82,6 +82,32 @@ void LuaRuntime::init()
             .addStaticFunction("currentTick", &Engine::currentTick)
     );
 
+    logInfo << "-- Mouse";
+    l["Mouse"].setClass(
+        UserdataMetatable<Mouse>()
+            .addStaticFunction("getX", [](){return Engine::getMouse().getX();})
+            .addStaticFunction("getY", [](){return Engine::getMouse().getY();})
+            .addStaticFunction("lHolding", [](){return Engine::getMouse().lHolding();})
+            .addStaticFunction("mHolding", [](){return Engine::getMouse().mHolding();})
+            .addStaticFunction("rHolding", [](){return Engine::getMouse().rHolding();})
+            .addStaticFunction("x1Holding", [](){return Engine::getMouse().x1Holding();})
+            .addStaticFunction("x2Holding", [](){return Engine::getMouse().x2Holding();})
+            .addStaticFunction("lPressed", [](){return Engine::getMouse().lPressed();})
+            .addStaticFunction("mPressed", [](){return Engine::getMouse().mPressed();})
+            .addStaticFunction("rPressed", [](){return Engine::getMouse().rPressed();})
+            .addStaticFunction("x1Pressed", [](){return Engine::getMouse().x1Pressed();})
+            .addStaticFunction("x2Pressed", [](){return Engine::getMouse().x2Pressed();})
+            .addStaticFunction("wheelUp", [](){return Engine::getMouse().wheelUp();})
+            .addStaticFunction("wheelDown", [](){return Engine::getMouse().wheelDown();})
+            .addStaticFunction("wheelLeft", [](){return Engine::getMouse().wheelLeft();})
+            .addStaticFunction("wheelRight", [](){return Engine::getMouse().wheelRight();})
+            .addOverloadedFunctions(
+                "hidden",
+                [](){return Engine::getMouse().isHidden();},
+                [](const bool& state){return Engine::getMouse().setHidden(state);}
+            )
+    );
+
     logInfo << "-- RenderManager";
     l["RenderManager"].setClass(
         UserdataMetatable<RenderManager>()

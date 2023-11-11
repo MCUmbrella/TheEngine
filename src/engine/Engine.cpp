@@ -21,6 +21,7 @@ static unsigned long tickCounter = 0;
 static bitset<1024> keysP{}; // pressed keys at a single tick (calculated at the end of pollSDLEvents)
 static bitset<1024> keysH[2]{}; // currently holding keys. [0]: down, [1]: repeat
 static bitset<1024> keysH_p[2]{}; // keysH at previous tick
+static Mouse mouse;
 
 const Engine& Engine::getInstance()
 {
@@ -31,11 +32,16 @@ const Engine& Engine::getInstance()
 void Engine::pollSDLEvents()
 {
     memcpy(keysH_p, keysH, sizeof(keysH));
+    memcpy(mouse.buttonsH_p, mouse.buttonsH, sizeof(mouse.buttonsH));
+    memset(mouse.wheel, 0, sizeof(mouse.wheel));
+    SDL_GetMouseState(&mouse.x, &mouse.y);
     static SDL_Event event;
     while(SDL_PollEvent(&event))
     {
         SDL_KeyboardEvent& ke = event.key;
         SDL_Scancode& kc = ke.keysym.scancode;
+        SDL_MouseButtonEvent& mbe = event.button;
+        SDL_MouseWheelEvent& mwe = event.wheel;
         switch(event.type)
         {
             case SDL_QUIT:
@@ -55,11 +61,47 @@ void Engine::pollSDLEvents()
                 keysH[1].set(kc, ke.repeat);
                 break;
             }
+            case SDL_MOUSEBUTTONDOWN:
+            {
+                if(mbe.button == SDL_BUTTON_LEFT)
+                    mouse.buttonsH[0] = true;
+                else if(mbe.button == SDL_BUTTON_MIDDLE)
+                    mouse.buttonsH[1] = true;
+                else if(mbe.button == SDL_BUTTON_RIGHT)
+                    mouse.buttonsH[2] = true;
+                else if(mbe.button == SDL_BUTTON_X1)
+                    mouse.buttonsH[3] = true;
+                else if(mbe.button == SDL_BUTTON_X2)
+                    mouse.buttonsH[4] = true;
+                break;
+            }
+            case SDL_MOUSEBUTTONUP:
+            {
+                if(mbe.button == SDL_BUTTON_LEFT)
+                    mouse.buttonsH[0] = false;
+                else if(mbe.button == SDL_BUTTON_MIDDLE)
+                    mouse.buttonsH[1] = false;
+                else if(mbe.button == SDL_BUTTON_RIGHT)
+                    mouse.buttonsH[2] = false;
+                else if(mbe.button == SDL_BUTTON_X1)
+                    mouse.buttonsH[3] = false;
+                else if(mbe.button == SDL_BUTTON_X2)
+                    mouse.buttonsH[4] = false;
+                break;
+            }
+            case SDL_MOUSEWHEEL:
+            {
+                mouse.wheel[mwe.y > 0 ? 0 : 1] = true;
+                mouse.wheel[mwe.x < 0 ? 2 : 3] = true;
+                break;
+            }
             default:
                 break;
         }
     }
     keysP = keysH_p[0].flip() & keysH[0]; // for(int i = 0; i != 1024; i++) keysP.set(i, !keysH_p[0][i] && keysH[0][i]);
+    for(int i = 0; i != sizeof(mouse.buttonsH); i++)
+        mouse.buttonsP[i] = !mouse.buttonsH_p[i] && mouse.buttonsH[i];
 }
 
 void Engine::init(const string& configPath)
@@ -180,4 +222,9 @@ bool Engine::keyRepeated(int code)
 unsigned long Engine::currentTick()
 {
     return tickCounter;
+}
+
+Mouse& Engine::getMouse()
+{
+    return mouse;
 }

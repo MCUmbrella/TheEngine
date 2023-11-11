@@ -6,6 +6,7 @@
 #define THEENGINE_ENGINE_H
 
 #include "EngineState.h"
+#include "Mouse.h"
 #include <string>
 #include <SDL2/SDL_scancode.h>
 
@@ -95,6 +96,8 @@ public:
      * Get the count of ticks passed.
      */
     static unsigned long currentTick();
+
+    static Mouse& getMouse();
 };
 
 #endif //THEENGINE_ENGINE_H
