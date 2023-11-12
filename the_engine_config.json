@@ -1,4 +1,12 @@
 {
-  "engineDataPath": "the_engine",
-  "userDataPath": "examples/Tsondu Tenzin"
+  "engine": {
+    "engineDataPath": "the_engine",
+    "userDataPath": "examples/Tsondu Tenzin",
+    "targetTps": 60
+  },
+  "renderManager": {
+    "softwareRender": false,
+    "accelerated": true,
+    "vsync": true
+  }
 }

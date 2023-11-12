@@ -17,6 +17,10 @@ public:
     static string getEngineDataPath();
 
     static string getUserDataPath();
+
+    static int getEngineTargetTps();
+
+    static unsigned int getSdlRendererFlags();
 };
 
 

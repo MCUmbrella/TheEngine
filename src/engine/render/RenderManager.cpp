@@ -70,7 +70,7 @@ void RenderManager::init()
         windowWidth, windowHeight, 0
     );
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
-    renderer = SDL_CreateRenderer(window, -1, 0);
+    renderer = SDL_CreateRenderer(window, -1, ConfigManager::getSdlRendererFlags());
     SDL_SetRenderDrawColor(renderer, bgR, bgG, bgB, 255);
     logInfo << "Window created: " << SDL_GetWindowTitle(window);
 

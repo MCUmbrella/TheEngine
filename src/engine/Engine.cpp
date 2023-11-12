@@ -15,8 +15,8 @@
 using std::bitset;
 
 static EngineState state = UNINITIALIZED;
-const static int TARGET_TPS = 60;
-const static long TICK_MAX_NS = 1000000000L / TARGET_TPS;
+static int targetTps;
+static long maxNsPerTick;
 static unsigned long tickCounter = 0;
 static Mouse mouse;
 static Keyboard keyboard;
@@ -111,6 +111,8 @@ void Engine::init(const string& configPath)
         ConfigManager::loadConfig(configPath);
         LuaRuntime::init();
         LuaRuntime::runFile(ConfigManager::getEngineDataPath() + "/data/lua/preInit.lua");
+        targetTps = ConfigManager::getEngineTargetTps();
+        maxNsPerTick = 1000000000L / targetTps;
         RenderManager::init();
         SoundManager::init();
         state = STOPPED;
@@ -160,13 +162,13 @@ void Engine::mainLoop()
         // delay & correction
         int64_t endTime = CommonUtil::currentTimeNanos(),
             executionTime = endTime - startTime,
-            delay = TICK_MAX_NS - executionTime;
+            delay = maxNsPerTick - executionTime;
         // if a single tick took too long to process, cancel the delay
-        if(executionTime > TICK_MAX_NS)
+        if(executionTime > maxNsPerTick)
         {
             delay = 0;
             logWarn << "Can't keep up! Tick #" << tickCounter << " took " << executionTime
-                    << " ns (should be <= " << TICK_MAX_NS << " ns)";
+                    << " ns (should be <= " << maxNsPerTick << " ns)";
             goto label_1;
         }
 
