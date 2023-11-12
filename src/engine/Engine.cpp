@@ -18,10 +18,8 @@ static EngineState state = UNINITIALIZED;
 const static int TARGET_TPS = 60;
 const static long TICK_MAX_NS = 1000000000L / TARGET_TPS;
 static unsigned long tickCounter = 0;
-static bitset<1024> keysP{}; // pressed keys at a single tick (calculated at the end of pollSDLEvents)
-static bitset<1024> keysH[2]{}; // currently holding keys. [0]: down, [1]: repeat
-static bitset<1024> keysH_p[2]{}; // keysH at previous tick
 static Mouse mouse;
+static Keyboard keyboard;
 
 const Engine& Engine::getInstance()
 {
@@ -31,7 +29,7 @@ const Engine& Engine::getInstance()
 
 void Engine::pollSDLEvents()
 {
-    memcpy(keysH_p, keysH, sizeof(keysH));
+    memcpy(keyboard.keysH_p, keyboard.keysH, sizeof(keyboard.keysH));
     memcpy(mouse.buttonsH_p, mouse.buttonsH, sizeof(mouse.buttonsH));
     memset(mouse.wheel, 0, sizeof(mouse.wheel));
     SDL_GetMouseState(&mouse.x, &mouse.y);
@@ -51,14 +49,14 @@ void Engine::pollSDLEvents()
             }
             case SDL_KEYDOWN:
             {
-                keysH[0].set(kc, true);
-                keysH[1].set(kc, ke.repeat);
+                keyboard.keysH[0].set(kc, true);
+                keyboard.keysH[1].set(kc, ke.repeat);
                 break;
             }
             case SDL_KEYUP:
             {
-                keysH[0].set(kc, false);
-                keysH[1].set(kc, ke.repeat);
+                keyboard.keysH[0].set(kc, false);
+                keyboard.keysH[1].set(kc, ke.repeat);
                 break;
             }
             case SDL_MOUSEBUTTONDOWN:
@@ -99,7 +97,7 @@ void Engine::pollSDLEvents()
                 break;
         }
     }
-    keysP = keysH_p[0].flip() & keysH[0]; // for(int i = 0; i != 1024; i++) keysP.set(i, !keysH_p[0][i] && keysH[0][i]);
+    keyboard.keysP = keyboard.keysH_p[0].flip() & keyboard.keysH[0];
     for(int i = 0; i != sizeof(mouse.buttonsH); i++)
         mouse.buttonsP[i] = !mouse.buttonsH_p[i] && mouse.buttonsH[i];
 }
@@ -204,21 +202,6 @@ const EngineState& Engine::getState()
     return state;
 }
 
-bool Engine::keyPressed(int code)
-{
-    return keysP[code];
-}
-
-bool Engine::keyHolding(int code)
-{
-    return keysH[0][code];
-}
-
-bool Engine::keyRepeated(int code)
-{
-    return keysH[1][code];
-}
-
 unsigned long Engine::currentTick()
 {
     return tickCounter;
@@ -227,4 +210,9 @@ unsigned long Engine::currentTick()
 Mouse& Engine::getMouse()
 {
     return mouse;
+}
+
+Keyboard& Engine::getKeyboard()
+{
+    return keyboard;
 }

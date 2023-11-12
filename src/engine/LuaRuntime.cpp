@@ -76,9 +76,6 @@ void LuaRuntime::init()
                 Engine::stop();
             })
             .addStaticFunction("getState", &Engine::getState)
-            .addStaticFunction("keyPressed", &Engine::keyPressed)
-            .addStaticFunction("keyHolding", &Engine::keyHolding)
-            .addStaticFunction("keyRepeated", &Engine::keyRepeated)
             .addStaticFunction("currentTick", &Engine::currentTick)
     );
 
@@ -106,6 +103,14 @@ void LuaRuntime::init()
                 [](){return Engine::getMouse().isHidden();},
                 [](const bool& state){return Engine::getMouse().setHidden(state);}
             )
+    );
+
+    logInfo << "-- Keyboard";
+    l["Keyboard"].setClass(
+        UserdataMetatable<Keyboard>()
+            .addStaticFunction("holding", [](const int& scancode){return Engine::getKeyboard().holding(scancode);})
+            .addStaticFunction("pressed", [](const int& scancode){return Engine::getKeyboard().pressed(scancode);})
+            .addStaticFunction("repeated", [](const int& scancode){return Engine::getKeyboard().repeated(scancode);})
     );
 
     logInfo << "-- RenderManager";

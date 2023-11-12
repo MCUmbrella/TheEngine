@@ -16,14 +16,14 @@ end
 
 vy = vy + G / 60
 
-if Engine.keyHolding(4) -- A
+if Keyboard.holding(4) -- A
 then
     player:setFlip(1)
     if vx > -5
     then
         vx = vx - 0.5
     end
-elseif Engine.keyHolding(7) -- D
+elseif Keyboard.holding(7) -- D
 then
     player:setFlip(0)
     if vx < 5
@@ -40,7 +40,7 @@ else
     end
 end
 
-if Engine.keyHolding(44) -- SPACE
+if Keyboard.holding(44) -- SPACE
 then
     if playerOnGround() then -- ground jump
         vy = -5

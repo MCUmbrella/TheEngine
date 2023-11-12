@@ -43,7 +43,7 @@ function tick()
     wh = RenderManager.getWindowHeight()
     RenderManager.setWindowTitle("We live we love we lie " .. t)
 
-    if Engine.keyPressed(41) or t == 3600
+    if Keyboard.pressed(41) or t == 3600
     then
         Engine.stop()
         return
@@ -77,27 +77,27 @@ function tick()
         player.y = wh - 1
     end
 
-    if Engine.keyHolding(26) -- W
+    if Keyboard.holding(26) -- W
     then
         player:move(0, -5)
     end
 
-    if Engine.keyHolding(22) -- S
+    if Keyboard.holding(22) -- S
     then
         player:move(0, 5)
     end
 
-    if Engine.keyHolding(4) -- A
+    if Keyboard.holding(4) -- A
     then
         player:move(-5, 0)
     end
 
-    if Engine.keyHolding(7) -- D
+    if Keyboard.holding(7) -- D
     then
         player:move(5, 0)
     end
 
-    if Engine.keyHolding(44) -- space
+    if Keyboard.holding(44) -- space
     then
         spaceHoldingTicks = spaceHoldingTicks + 1
         player:move(math.sin(t / 1.5) * 5, math.cos(t / 1.5) * 5)
@@ -108,7 +108,7 @@ function tick()
         end
     end
 
-    if Engine.keyPressed(43)
+    if Keyboard.pressed(43)
     then
         Runtime.log("Holy moly")
     end

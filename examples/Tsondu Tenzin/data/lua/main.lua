@@ -48,21 +48,21 @@ function tick()
     t = Engine.currentTick()
 
     -- exit
-    if Engine.keyPressed(41) -- ESC
+    if Keyboard.pressed(41) -- ESC
     then
         Engine.stop()
         return
     end
 
     -- print debug info
-    if Engine.keyPressed(60) or Engine.keyRepeated(60) -- F3
+    if Keyboard.pressed(60) or Keyboard.repeated(60) -- F3
     then
         SoundManager.playMusic(BGM)
         printDebug()
     end
 
     -- texture offset demo
-    if Engine.keyHolding(224) -- LCTRL
+    if Keyboard.holding(224) -- LCTRL
     then
         if playingCtrlSound == nil
         then
@@ -82,7 +82,7 @@ function tick()
     end
 
     -- texture resizing demo
-    if Engine.keyHolding(225) -- LSHIFT
+    if Keyboard.holding(225) -- LSHIFT
     then
         if playingShiftSound == nil
         then
@@ -105,21 +105,21 @@ function tick()
     end
 
     -- texture rotation demo
-    if Engine.keyHolding(80) -- ARROW LEFT
+    if Keyboard.holding(80) -- ARROW LEFT
     then
         player:rotate(-0.1)
     end
-    if Engine.keyHolding(79) -- ARROW RIGHT
+    if Keyboard.holding(79) -- ARROW RIGHT
     then
         player:rotate(0.1)
     end
 
     -- music volume adjustment
-    if Engine.keyHolding(82) -- ARROW UP
+    if Keyboard.holding(82) -- ARROW UP
     then
         SoundManager.musicVolume(SoundManager.musicVolume() + 1)
     end
-    if Engine.keyHolding(81) -- ARROW DOWN
+    if Keyboard.holding(81) -- ARROW DOWN
     then
         SoundManager.musicVolume(SoundManager.musicVolume() - 1)
     end

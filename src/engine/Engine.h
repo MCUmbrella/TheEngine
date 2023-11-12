@@ -6,7 +6,8 @@
 #define THEENGINE_ENGINE_H
 
 #include "EngineState.h"
-#include "Mouse.h"
+#include "input/Mouse.h"
+#include "input/Keyboard.h"
 #include <string>
 #include <SDL2/SDL_scancode.h>
 
@@ -54,50 +55,13 @@ public:
     const static EngineState& getState();
 
     /**
-     * Check if a key is pressed.
-     * @param code The SDL scancode of the key.
-     * @return true if the key is pressed, false otherwise.
-     * @sa SDL2/SDL_scancode.h or <a href="https://www.freepascal-meets-sdl.net/sdl-2-0-scancode-lookup-table/">SDL scancode lookup table</a>
-     *
-     * @code Example:
-     *   SEQ \ VAL
-     *   KEY | 01111111100111111110
-     *   FUN | 01000000000100000000
-     */
-    static bool keyPressed(int code);
-
-    /**
-     * Check if a key is holding.
-     * @param code The SDL scancode of the key.
-     * @return true if the key is holding, false otherwise.
-     * @sa keyPressed(int)
-     *
-     * @code Example:
-     *   SEQ \ VAL
-     *   KEY | 01111111100111111110
-     *   FUN | 01111111100111111110
-     */
-    static bool keyHolding(int code);
-
-    /**
-     * Check if a key is repeating.
-     * @param code The SDL scancode of the key.
-     * @return true if the key is repeating, false otherwise.
-     * @sa keyPressed(int)
-     *
-     * @code Example:
-     *   SEQ \ VAL
-     *   KEY | 01111111100111111110
-     *   FUN | 00001111100000111110
-     */
-    static bool keyRepeated(int code);
-
-    /**
      * Get the count of ticks passed.
      */
     static unsigned long currentTick();
 
     static Mouse& getMouse();
+
+    static Keyboard& getKeyboard();
 };
 
 #endif //THEENGINE_ENGINE_H
