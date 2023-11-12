@@ -59,8 +59,14 @@ public:
      */
     static unsigned long currentTick();
 
+    /**
+     * Get the representation of the mouse.
+     */
     static Mouse& getMouse();
 
+    /**
+     * Get the representation of the keyboard.
+     */
     static Keyboard& getKeyboard();
 };
 
