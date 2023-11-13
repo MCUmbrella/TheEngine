@@ -30,7 +30,7 @@ function prepare()
     layer1 = RenderManager.addLayer(1)
     background = layer0:addEntity(BG_TEXTURE)
     background:setLocation(ww / 2, wh / 2)
-    background:resizeTexture(ww, wh)
+    background:setTextureSize(ww, wh)
 
     JUMP_SOUND = SoundManager.addSound("jump", "sfx/entity/dj/1.ogg")
     WALLJUMP_SOUND = SoundManager.addSound("walljump", "sfx/entity/dj/5.ogg")
@@ -90,7 +90,7 @@ function tick()
         end
         tt = tt + 1
         local m = math.sin(tt / 15) * 10
-        player:resizeTexture(
+        player:setTextureSize(
                 math.floor(player.hitboxWidth + m),
                 math.floor(player.hitboxHeight + m * player.hitboxHeight / player.hitboxWidth)
         )

@@ -58,9 +58,9 @@ public:
 
     void rotate(const double& d);
 
-    void resizeHitbox(const int& hx, const int& hy);
+    void setHitboxSize(const int& hx, const int& hy);
 
-    void resizeTexture(const int& tx, const int& ty);
+    void setTextureSize(const int& tx, const int& ty);
 
     /**
      * Set the size of the texture to its actual size stored in the file.
@@ -79,10 +79,10 @@ public:
      * The texture cropping state will be reset.
      * @param path The path of the texture.
      */
-    void changeTexture(const string& path);
+    void setTexture(const string& path);
 
     // this function is used in Lua scripts
-    void changeTexture_l(const string& path);
+    void setTexture_l(const string& path);
 
     /**
      * Get the mode of the texture's flip.
@@ -102,11 +102,11 @@ public:
      * texture. If the cropping area has part out of the original texture, the
      * behavior is undefined.
      * (Trick: set startX&Y to non-zero and dx&y to zero makes the entity invisible)
-     * @param startX The X coordinate of the crop start point.
-     * @param startY The Y coordinate of the crop start point.
+     * @param startX The X coordinate of the crop start point (upper-left corner).
+     * @param startY The Y coordinate of the crop start point (upper-left corner).
      * @param dx The width of the cropped area that the texture should be cropped to.
      * @param dy The height of the cropped area that the texture should be cropped to.
-     * @throw IllegalArgumentException if startX/startY/dx/dy < 0
+     * @throw IllegalArgumentException if startX/startY/dx/dy is negative.
      */
     void setCrop(const int& startX, const int& startY, const int& dx, const int& dy);
 

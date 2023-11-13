@@ -49,13 +49,13 @@ void RenderEntity::rotate(const double& degree)
     textureDegree += degree;
 }
 
-void RenderEntity::resizeHitbox(const int& hx, const int& hy)
+void RenderEntity::setHitboxSize(const int& hx, const int& hy)
 {
     hitboxWidth = hx;
     hitboxHeight = hy;
 }
 
-void RenderEntity::resizeTexture(const int& tx, const int& ty)
+void RenderEntity::setTextureSize(const int& tx, const int& ty)
 {
     textureWidth = tx;
     textureHeight = ty;
@@ -74,15 +74,15 @@ void RenderEntity::resetHitboxSize()
     hitboxHeight = _hitboxHeight;
 }
 
-void RenderEntity::changeTexture(const string& path)
+void RenderEntity::setTexture(const string& path)
 {
     sdlTexture = RenderManager::getTexture(path);
     resetCrop();
 }
 
-void RenderEntity::changeTexture_l(const string& path)
+void RenderEntity::setTexture_l(const string& path)
 {
-    changeTexture(ConfigManager::getUserDataPath() + "/assets/textures/" + path);
+    setTexture(ConfigManager::getUserDataPath() + "/assets/textures/" + path);
 }
 
 int RenderEntity::getFlip()

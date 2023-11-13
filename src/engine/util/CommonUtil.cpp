@@ -33,13 +33,10 @@ string CommonUtil::nano2string(const int64_t& timestampNs)
 {
     time_t t = timestampNs / 1000000000;
     tm* tt = localtime(&t);
-    char buf[32];
+    char buf[24];
     strftime(buf, sizeof(buf), "%F %T:", tt);
-    string s(buf);
-    char ms[4];
-    sprintf(ms, "%03ld", timestampNs / 1000000 % 1000);
-    s.append(ms);
-    return s;
+    sprintf(&buf[strlen(buf)], "%03ld", timestampNs / 1000000 % 1000);
+    return buf;
 }
 
 void CommonUtil::killThread(std::thread& t)
@@ -85,7 +82,7 @@ bool CommonUtil::isInteger(const string& s)
     return sIndex == s.size(); // all remaining characters are decimal digits?
 }
 
-bool CommonUtil::inUnsigned(const string& s)
+bool CommonUtil::isUnsigned(const string& s)
 {
     if(s.empty())
         return false;

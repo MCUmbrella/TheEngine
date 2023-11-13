@@ -77,7 +77,7 @@ void RenderManager::init()
     // load placeholder texture
     placeholderTexturePath = ConfigManager::getEngineDataPath() + "/assets/textures/misc/placeholder.png";
     IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
-    if((placeholderTexture = IMG_LoadTexture(renderer, placeholderTexturePath.c_str())) == nullptr)
+    if((placeholderTexture = loadTexture(placeholderTexturePath)) == nullptr)
         throw EngineException("Is the placeholder texture file \"" + string(placeholderTexturePath) + "\" OK?");
     loadedTextures[placeholderTexturePath] = placeholderTexture;
 

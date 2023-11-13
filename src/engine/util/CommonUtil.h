@@ -52,7 +52,7 @@ public:
     /**
      * Check if the given string represents an unsigned decimal integer.
      */
-    static bool inUnsigned(const string& s);
+    static bool isUnsigned(const string& s);
 
     /**
      * Check if the given string represents a decimal number.
