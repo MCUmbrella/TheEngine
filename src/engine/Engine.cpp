@@ -174,23 +174,24 @@ void Engine::mainLoop()
             delay = 0;
             logWarn << "Can't keep up! Tick #" << tickCounter << " took " << executionTime
                     << " ns (should be <= " << maxNsPerTick << " ns)";
-            goto label_1;
         }
 
-        label_1:
         // tick profiler things
-        tickProfiler += executionTime;
-        if(ConfigManager::enableProfiler() &&
-           tickCounter % ConfigManager::getEngineTargetTps() == ConfigManager::getEngineTargetTps() - 1)
+        if(ConfigManager::enableProfiler())
         {
-            long double avg = (long double) tickProfiler / ConfigManager::getEngineTargetTps();
-            logInfo << "Average tick cost: " << avg
-                    << "ns -- " << avg * 100 / maxNsPerTick << "% of max tick execution time";
-            tickProfiler = 0;
+            tickProfiler += executionTime;
+            if(tickCounter % ConfigManager::getEngineTargetTps() == ConfigManager::getEngineTargetTps() - 1)
+            {
+                long double avg = (long double) tickProfiler / ConfigManager::getEngineTargetTps();
+                logInfo << "Average tick cost: " << avg
+                        << "ns -- " << avg * 100 / maxNsPerTick << "% of max tick execution time";
+                tickProfiler = 0;
+            }
         }
+
         // ready for next tick
-        ++tickCounter;
         std::this_thread::sleep_for(std::chrono::nanoseconds(delay));
+        ++tickCounter;
     }
 
     logInfo << "Exited main loop";
