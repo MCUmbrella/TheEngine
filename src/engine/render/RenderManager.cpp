@@ -259,6 +259,8 @@ void RenderManager::placeTexture(RenderEntity& re)
     destRect.y = (re.y - re.textureHeight / 2.0) + re.textureOffsetY;
     destRect.w = re.textureWidth;
     destRect.h = re.textureHeight;
+    SDL_SetTextureColorMod(re.sdlTexture, re.textureRed, re.textureGreen, re.textureBlue);
+    SDL_SetTextureAlphaMod(re.sdlTexture, re.textureAlpha);
     SDL_RenderCopyExF(
         renderer,
         re.sdlTexture,

@@ -40,6 +40,14 @@ public:
     // The angle of the texture rotation.
     double textureDegree = 0;
 
+    // the brightness of each color channel of the entity's texture,
+    // from 0 (blacked out) to 255 (rendered as is).
+    uint8_t textureRed = 255, textureGreen = 255, textureBlue = 255;
+
+    // the opacity of the entity's texture,
+    // from 0 (invisible) to 255 (completely visible).
+    uint8_t textureAlpha = 255;
+
     SDL_RendererFlip flip = SDL_FLIP_NONE;
 
     SDL_Rect cropRect{};
