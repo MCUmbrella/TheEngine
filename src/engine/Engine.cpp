@@ -20,7 +20,6 @@ static long maxNsPerTick;
 static unsigned long tickCounter = 0;
 static Mouse mouse;
 static Keyboard keyboard;
-static bool enableProfiler;
 
 const Engine& Engine::getInstance()
 {
@@ -113,7 +112,6 @@ void Engine::init(const string& configPath)
         ConfigManager::loadConfig(configPath);
         targetTps = ConfigManager::getEngineTargetTps();
         maxNsPerTick = 1000000000L / targetTps;
-        enableProfiler = ConfigManager::enableProfiler();
         // initialize subsystems
         LuaRuntime::init();
         LuaRuntime::runFile(ConfigManager::getEngineDataPath() + "/data/lua/preInit.lua");
@@ -182,7 +180,7 @@ void Engine::mainLoop()
         label_1:
         // tick profiler things
         tickProfiler += executionTime;
-        if(enableProfiler &&
+        if(ConfigManager::enableProfiler() &&
            tickCounter % ConfigManager::getEngineTargetTps() == ConfigManager::getEngineTargetTps() - 1)
         {
             long double avg = (long double) tickProfiler / ConfigManager::getEngineTargetTps();
