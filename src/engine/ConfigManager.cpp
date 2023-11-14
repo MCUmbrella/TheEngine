@@ -16,6 +16,7 @@ static struct
     string engineDataPath;
     string userDataPath;
     int targetTps;
+    bool enableProfiler;
     // don't worry if the compiler complains about the field is not
     // initialized, the default value will be set in the future
 } cfgEngine;
@@ -60,6 +61,9 @@ void ConfigManager::loadConfig(const string& path)
             je.contains("targetTps") && je["targetTps"].is_number_integer() ? je["targetTps"].get<int>() : 60;
         if(cfgEngine.targetTps <= 0)
             throw ConfigException("Invalid value: engine.targetTps must be larger than 0");
+        // enging.enableProfiler
+        cfgEngine.enableProfiler =
+            je.contains("enableProfiler") && je["enableProfiler"].is_boolean() && je["enableProfiler"].get<bool>();
     }
     else
         throw ConfigException("Essential field missing: Object 'engine'");
@@ -100,6 +104,11 @@ string ConfigManager::getUserDataPath()
 int ConfigManager::getEngineTargetTps()
 {
     return cfgEngine.targetTps;
+}
+
+bool ConfigManager::enableProfiler()
+{
+    return cfgEngine.enableProfiler;
 }
 
 unsigned int ConfigManager::getSdlRendererFlags()

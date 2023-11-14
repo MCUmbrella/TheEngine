@@ -20,6 +20,7 @@ static long maxNsPerTick;
 static unsigned long tickCounter = 0;
 static Mouse mouse;
 static Keyboard keyboard;
+static bool enableProfiler;
 
 const Engine& Engine::getInstance()
 {
@@ -108,11 +109,14 @@ void Engine::init(const string& configPath)
     {
         logInfo << "Initializing";
         state = INITIALIZING;
+        // load config
         ConfigManager::loadConfig(configPath);
-        LuaRuntime::init();
-        LuaRuntime::runFile(ConfigManager::getEngineDataPath() + "/data/lua/preInit.lua");
         targetTps = ConfigManager::getEngineTargetTps();
         maxNsPerTick = 1000000000L / targetTps;
+        enableProfiler = ConfigManager::enableProfiler();
+        // initialize subsystems
+        LuaRuntime::init();
+        LuaRuntime::runFile(ConfigManager::getEngineDataPath() + "/data/lua/preInit.lua");
         RenderManager::init();
         SoundManager::init();
         state = STOPPED;
@@ -149,6 +153,8 @@ void Engine::mainLoop()
         if(!l[s].isType<kaguya::LuaFunction>())
             throw LuaException(string("Missing Lua function: ") + s);
 
+    int64_t tickProfiler = 0;
+
     l["prepare"]();
     while(state == RUNNING)
     {
@@ -160,9 +166,10 @@ void Engine::mainLoop()
         RenderManager::render();
 
         // delay & correction
-        int64_t endTime = CommonUtil::currentTimeNanos(),
-            executionTime = endTime - startTime,
-            delay = maxNsPerTick - executionTime;
+        int64_t endTime = CommonUtil::currentTimeNanos();
+        int64_t executionTime = endTime - startTime;
+        int64_t delay = maxNsPerTick - executionTime;
+
         // if a single tick took too long to process, cancel the delay
         if(executionTime > maxNsPerTick)
         {
@@ -173,6 +180,17 @@ void Engine::mainLoop()
         }
 
         label_1:
+        // tick profiler things
+        tickProfiler += executionTime;
+        if(enableProfiler &&
+           tickCounter % ConfigManager::getEngineTargetTps() == ConfigManager::getEngineTargetTps() - 1)
+        {
+            long double avg = (long double) tickProfiler / ConfigManager::getEngineTargetTps();
+            logInfo << "Average tick cost: " << avg
+                    << "ns -- " << avg * 100 / maxNsPerTick << "% of max tick execution time";
+            tickProfiler = 0;
+        }
+        // ready for next tick
         ++tickCounter;
         std::this_thread::sleep_for(std::chrono::nanoseconds(delay));
     }

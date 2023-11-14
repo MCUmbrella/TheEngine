@@ -2,7 +2,8 @@
   "engine": {
     "engineDataPath": "the_engine",
     "userDataPath": "the_engine",
-    "targetTps": 60
+    "targetTps": 60,
+    "enableProfiler": false
   },
   "renderManager": {
     "softwareRender": false,

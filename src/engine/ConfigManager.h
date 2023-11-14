@@ -20,6 +20,8 @@ public:
 
     static int getEngineTargetTps();
 
+    static bool enableProfiler();
+
     static unsigned int getSdlRendererFlags();
 };
 
