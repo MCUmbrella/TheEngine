@@ -7,6 +7,11 @@
 #include "../ConfigManager.h"
 #include "../exception/IllegalArgumentException.h"
 
+RenderEntity::RenderEntity(const int64_t& id) : id(id)
+{
+    sdlTexture = nullptr;
+}
+
 RenderEntity::RenderEntity(const int64_t& id, const string& texturePath) : id(id)
 {
     sdlTexture = RenderManager::getTexture(texturePath);

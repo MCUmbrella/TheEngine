@@ -98,6 +98,8 @@ void RenderManager::init()
 void RenderManager::shutdown()
 {
     logInfo << "Shutting down render manager";
+    for(auto& l : layers)
+        l.second.clear();
     IMG_Quit();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);

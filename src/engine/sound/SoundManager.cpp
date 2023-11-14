@@ -42,6 +42,8 @@ void SoundManager::init()
 void SoundManager::shutdown()
 {
     logInfo << "Shutting down sound manager";
+    Mix_HaltMusic();
+    Mix_HaltChannel(-1);
     Mix_Quit();
     logInfo << "Sound manager shutted down";
 }

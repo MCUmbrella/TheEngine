@@ -52,6 +52,12 @@ public:
 
     SDL_Rect cropRect{};
 
+    RenderEntity(const RenderEntity&) = delete;
+
+    RenderEntity& operator=(const RenderEntity&) = delete;
+
+    explicit RenderEntity(const int64_t& id);
+
     RenderEntity(const int64_t& id, const string& texturePath);
 
     int64_t getId();
@@ -87,7 +93,7 @@ public:
      * The texture cropping state will be reset.
      * @param path The path of the texture.
      */
-    void setTexture(const string& path);
+    virtual void setTexture(const string& path);
 
     // this function is used in Lua scripts
     void setTexture_l(const string& path);

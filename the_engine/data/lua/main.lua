@@ -1,6 +1,7 @@
 local CURSOR_TEXTURE = "misc/cursor.png"
 local cursor
 local t
+local splashText
 
 function prepare()
     Runtime.log("Placeholder level loaded")
@@ -10,6 +11,11 @@ function prepare()
     cursor:setTextureSize(32, 32)
     cursor:setTextureOffset(cursor.textureWidth / 2, cursor.textureHeight / 2)
     Mouse.hidden(true)
+
+    splashText = RenderManager.getLayer(0):addText("No data!")
+    splashText:setLocation(RenderManager.getWindowWidth() / 2, RenderManager.getWindowHeight() / 2)
+    splashText.textureBlue = 64
+    splashText.textureGreen = 64
 end
 
 function tick()
@@ -21,15 +27,11 @@ function tick()
         return
     end
 
-    if t % 300 == 0
-    then
-        Runtime.log(1, "No data!")
-    end
-
     cursor:setLocation(Mouse.getX(), Mouse.getY())
     cursor.textureRed = math.floor(128 + math.sin(t / 20) * 128)
     cursor.textureGreen = math.floor(128 + math.cos(t / 20) * 128)
     cursor.textureBlue = math.floor(128 - math.sin(t / 20) * 128)
+    splashText.textureAlpha = math.floor(128 + math.sin(t / 20) * 128)
 end
 
 function cleanup()

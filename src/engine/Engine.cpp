@@ -179,6 +179,7 @@ void Engine::mainLoop()
 
     logInfo << "Exited main loop";
     l["cleanup"]();
+    l.garbageCollect();
     SoundManager::shutdown();
     RenderManager::shutdown();
     SDL_Quit();

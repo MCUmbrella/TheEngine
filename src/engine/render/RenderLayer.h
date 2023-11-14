@@ -7,13 +7,15 @@
 
 
 #include <map>
+#include <memory>
 #include "RenderEntity.h"
+#include "TextRenderEntity.h"
 
 class RenderLayer
 {
 private:
     int order;
-    std::map<int64_t, RenderEntity> renderEntities;
+    std::map<int64_t, std::shared_ptr<RenderEntity>> renderEntities;
 public:
     explicit RenderLayer(const int& order) : order(order)
     {
@@ -32,12 +34,18 @@ public:
     RenderEntity* addEntity_l(const string& texturePath);
 
     /**
+     * Add a new text entity to the layer.
+     * @param content The content of the text entity.
+     * @return The pointer to the newly added entity.
+     */
+    TextRenderEntity* addText(const string& content);
+
+    /**
      * Remove an entity from the layer.
      * @param id The ID of the entity.
-     * @return The copy of the removed entity.
      * @throw EngineException if the entity with this ID is not found.
      */
-    RenderEntity removeEntity(const int64_t& id);
+    void removeEntity(const int64_t& id);
 
     /**
      * Get render entity by its ID.

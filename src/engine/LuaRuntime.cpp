@@ -169,11 +169,21 @@ void LuaRuntime::init()
             .addFunction("setCrop", &RenderEntity::setCrop)
             .addFunction("resetCrop", &RenderEntity::resetCrop)
     );
+
+    logInfo << "-- TextRenderEntity";
+    l["TextRenderEntity"].setClass(
+        UserdataMetatable<TextRenderEntity, RenderEntity>()
+            .addFunction("setTexture", &TextRenderEntity::setTexture)
+            .addFunction("getContent", &TextRenderEntity::getContent)
+            .addFunction("setContent", &TextRenderEntity::setContent)
+    );
+
     logInfo << "-- RenderLayer";
     l["RenderLayer"].setClass(
         UserdataMetatable<RenderLayer>()
             .addFunction("getOrder", &RenderLayer::getOrder)
             .addFunction("addEntity", &RenderLayer::addEntity_l)
+            .addFunction("addText", &RenderLayer::addText)
             .addFunction("removeEntity", &RenderLayer::removeEntity)
             .addFunction("getEntity", &RenderLayer::getEntity)
             .addFunction("hasEntity", &RenderLayer::hasEntity)
