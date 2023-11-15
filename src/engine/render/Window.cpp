@@ -14,8 +14,7 @@ Window::Window(unsigned int flags) : flags(flags)
     {
         throw EngineException(string("Failed to create SDL window: ") + SDL_GetError());
     }
-    SDL_GetWindowPosition(sdlWindow, &x, &y);
-    SDL_GetWindowSize(sdlWindow, &w, &h);
+    update();
 }
 
 Window::~Window()
@@ -71,4 +70,10 @@ void Window::setTitle(const string& title_)
 {
     title = title_;
     SDL_SetWindowTitle(sdlWindow, title.c_str());
+}
+
+void Window::update()
+{
+    SDL_GetWindowPosition(sdlWindow, &x, &y);
+    SDL_GetWindowSize(sdlWindow, &w, &h);
 }

@@ -160,6 +160,7 @@ void Engine::mainLoop()
 
         // tick logics
         pollSDLEvents();
+        RenderManager::getWindow()->update();
         l["tick"]();
         RenderManager::render();
 

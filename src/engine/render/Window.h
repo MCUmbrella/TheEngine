@@ -42,6 +42,8 @@ public:
     string getTitle();
 
     void setTitle(const string& title_);
+
+    void update();
 };
 
 #endif //THEENGINE_WINDOW_H
