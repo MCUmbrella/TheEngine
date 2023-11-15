@@ -18,10 +18,10 @@ function prepare()
     Runtime.log("prepare() called")
     t = Engine.currentTick()
     layer0 = RenderManager.getLayer(0)
-    wx = RenderManager.getWindowX()
-    wy = RenderManager.getWindowY()
-    ww = RenderManager.getWindowWidth()
-    wh = RenderManager.getWindowHeight()
+    wx = Window.getX()
+    wy = Window.getY()
+    ww = Window.getWidth()
+    wh = Window.getHeight()
 
     RenderManager.loadTexture(PLAYER_TEXTURE)
 
@@ -37,11 +37,11 @@ end
 
 function tick()
     t = Engine.currentTick()
-    wx = RenderManager.getWindowX()
-    wy = RenderManager.getWindowY()
-    ww = RenderManager.getWindowWidth()
-    wh = RenderManager.getWindowHeight()
-    RenderManager.setWindowTitle("We live we love we lie " .. t)
+    wx = Window.getX()
+    wy = Window.getY()
+    ww = Window.getWidth()
+    wh = Window.getHeight()
+    Window.setTitle("We live we love we lie " .. t)
 
     if Keyboard.pressed(41) or t == 3600
     then
@@ -52,28 +52,28 @@ function tick()
     if (player.x < 0)
     then
         wx = math.ceil(wx + player.x)
-        RenderManager.setWindowLocation(wx, wy)
+        Window.setLocation(wx, wy)
         player.x = 0
     end
 
     if (player.y < 0)
     then
         wy = math.ceil(wy + player.y)
-        RenderManager.setWindowLocation(wx, wy)
+        Window.setLocation(wx, wy)
         player.y = 0
     end
 
     if (player.x >= ww)
     then
         wx = math.floor(wx + player.x - ww)
-        RenderManager.setWindowLocation(wx, wy)
+        Window.setLocation(wx, wy)
         player.x = ww - 1
     end
 
     if (player.y >= wh)
     then
         wy = math.floor(wy + player.y - wh)
-        RenderManager.setWindowLocation(wx, wy)
+        Window.setLocation(wx, wy)
         player.y = wh - 1
     end
 

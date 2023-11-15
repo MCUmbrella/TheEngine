@@ -16,16 +16,11 @@ using std::to_string;
 static string placeholderTexturePath;
 static SDL_Texture* placeholderTexture = nullptr;
 
-static string windowTitle;
-static SDL_Window* window = nullptr;
-static int windowX = 0;
-static int windowY = 0;
-static int windowWidth = 640;
-static int windowHeight = 480;
+static Window* window = nullptr;
 static SDL_Renderer* renderer = nullptr;
 static unsigned int bgR = 0U;
-static unsigned int bgG = 0U;
-static unsigned int bgB = 0U;
+static unsigned int bgG = 31U;
+static unsigned int bgB = 63U;
 
 static string defaultFontPath;
 static TTF_Font* font16 = nullptr;
@@ -43,7 +38,7 @@ const RenderManager& RenderManager::getInstance()
     return THE_RENDER_MANAGER;
 }
 
-SDL_Window* RenderManager::getWindow()
+Window* RenderManager::getWindow()
 {
     return window;
 }
@@ -65,14 +60,11 @@ void RenderManager::init()
 
     // create window and sdl renderer
     logInfo << "Creating window";
-    window = SDL_CreateWindow(
-        windowTitle.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-        windowWidth, windowHeight, 0
-    );
+    window = new Window();
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
-    renderer = SDL_CreateRenderer(window, -1, ConfigManager::getSdlRendererFlags());
+    renderer = SDL_CreateRenderer(window->getSdlWindow(), -1, ConfigManager::getSdlRendererFlags());
     SDL_SetRenderDrawColor(renderer, bgR, bgG, bgB, 255);
-    logInfo << "Window created: " << SDL_GetWindowTitle(window);
+    logInfo << "Window created: " << window->getTitle();
 
     // load placeholder texture
     placeholderTexturePath = ConfigManager::getEngineDataPath() + "/assets/textures/misc/placeholder.png";
@@ -102,7 +94,7 @@ void RenderManager::shutdown()
         l.second.clear();
     IMG_Quit();
     SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
+    delete window;
     TTF_Quit();
     if(loadedTextures.size() != 1)
     {
@@ -125,60 +117,12 @@ void RenderManager::render()
     SDL_RenderPresent(renderer);
 }
 
-int RenderManager::getWindowX()
-{
-    SDL_GetWindowPosition(window, &windowX, &windowY);
-    return windowX;
-}
-
-int RenderManager::getWindowY()
-{
-    SDL_GetWindowPosition(window, &windowX, &windowY);
-    return windowY;
-}
-
-void RenderManager::setWindowLocation(const int& x, const int& y)
-{
-    windowX = x;
-    windowY = y;
-    SDL_SetWindowPosition(window, x, y);
-}
-
-int RenderManager::getWindowWidth()
-{
-    return windowWidth;
-}
-
-int RenderManager::getWindowHeight()
-{
-    return windowHeight;
-}
-
-void RenderManager::setWindowSize(const int& w, const int& h)
-{
-    windowWidth = w;
-    windowHeight = h;
-    //logInfo << "Setting window size to " << w << " * " << h;
-    SDL_SetWindowSize(window, w, h);
-}
-
 void RenderManager::setBackgroundColor(unsigned int r, unsigned int g, unsigned int b)
 {
     bgR = r;
     bgG = g;
     bgB = b;
     SDL_SetRenderDrawColor(renderer, bgR, bgG, bgB, 255);
-}
-
-string RenderManager::getWindowTitle()
-{
-    return windowTitle;
-}
-
-void RenderManager::setWindowTitle(const string& title)
-{
-    SDL_SetWindowTitle(window, title.c_str());
-    windowTitle = title;
 }
 
 int RenderManager::getTextureWidth(SDL_Texture* texture)

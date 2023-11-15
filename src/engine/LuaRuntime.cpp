@@ -113,18 +113,29 @@ void LuaRuntime::init()
             .addStaticFunction("repeated", [](const int& scancode){return Engine::getKeyboard().repeated(scancode);})
     );
 
+    logInfo << "-- Window";
+    l["Window"].setClass(
+        UserdataMetatable<Window>()
+            .addStaticFunction("getX", [](){return RenderManager::getWindow()->getX();})
+            .addStaticFunction("getY", [](){return RenderManager::getWindow()->getY();})
+            .addStaticFunction(
+                "setLocation",
+                [](const int& x, const int& y){RenderManager::getWindow()->setLocation(x, y);}
+            )
+            .addStaticFunction("getWidth", [](){return RenderManager::getWindow()->getWidth();})
+            .addStaticFunction("getHeight", [](){return RenderManager::getWindow()->getHeight();})
+            .addStaticFunction(
+                "setSize",
+                [](const int& w, const int& h){RenderManager::getWindow()->setSize(w, h);}
+            )
+            .addStaticFunction("getTitle", [](){return RenderManager::getWindow()->getTitle();})
+            .addStaticFunction("setTitle", [](const string& title){return RenderManager::getWindow()->setTitle(title);})
+    );
+
     logInfo << "-- RenderManager";
     l["RenderManager"].setClass(
         UserdataMetatable<RenderManager>()
-            .addStaticFunction("getWindowWidth", &RenderManager::getWindowWidth)
-            .addStaticFunction("getWindowHeight", &RenderManager::getWindowHeight)
-            .addStaticFunction("setWindowSize", &RenderManager::setWindowSize)
             .addStaticFunction("setBackgroundColor", &RenderManager::setBackgroundColor)
-            .addStaticFunction("getWindowTitle", &RenderManager::getWindowTitle)
-            .addStaticFunction("setWindowTitle", &RenderManager::setWindowTitle)
-            .addStaticFunction("getWindowX", &RenderManager::getWindowX)
-            .addStaticFunction("getWindowY", &RenderManager::getWindowY)
-            .addStaticFunction("setWindowLocation", &RenderManager::setWindowLocation)
             .addStaticFunction("loadTexture", [](const string& path){
                 RenderManager::loadTexture(ConfigManager::getUserDataPath() + "/assets/textures/" + path);
             })

@@ -20,12 +20,12 @@ function prepare()
     G = 9.8
     vx = 0
     vy = 0
-    RenderManager.setWindowTitle("The Amazing Adventure of Tsondu Tenzin")
+    Window.setTitle("The Amazing Adventure of Tsondu Tenzin")
     RenderManager.loadTexture(PLAYER_TEXTURE)
     RenderManager.loadTexture(BG_TEXTURE)
 
-    ww = RenderManager.getWindowWidth()
-    wh = RenderManager.getWindowHeight()
+    ww = Window.getWidth()
+    wh = Window.getHeight()
     layer0 = RenderManager.getLayer(0)
     layer1 = RenderManager.addLayer(1)
     background = layer0:addEntity(BG_TEXTURE)

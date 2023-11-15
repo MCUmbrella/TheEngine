@@ -1,5 +1,2 @@
 io.write("Lua version: ", _VERSION, "\n")
 Runtime.log("Pre-init script is running in state " .. Engine.getState())
-RenderManager.setWindowSize(640, 480)
-RenderManager.setWindowTitle("The Engine")
-RenderManager.setBackgroundColor(0, 31, 63)

@@ -13,7 +13,7 @@ function prepare()
     Mouse.hidden(true)
 
     splashText = RenderManager.getLayer(0):addText("No data!")
-    splashText:setLocation(RenderManager.getWindowWidth() / 2, RenderManager.getWindowHeight() / 2)
+    splashText:setLocation(Window.getWidth() / 2, Window.getHeight() / 2)
     splashText.textureBlue = 64
     splashText.textureGreen = 64
 end

@@ -12,6 +12,7 @@
 #include "FontSize.h"
 #include "RenderEntity.h"
 #include "RenderLayer.h"
+#include "Window.h"
 
 using std::string;
 
@@ -29,7 +30,7 @@ public:
 
     const static RenderManager& getInstance();
 
-    static SDL_Window* getWindow();
+    static Window* getWindow();
 
     static SDL_Renderer* getRenderer();
 
@@ -39,23 +40,7 @@ public:
 
     static void render();
 
-    static int getWindowX();
-
-    static int getWindowY();
-
-    static void setWindowLocation(const int& x, const int& y);
-
-    static int getWindowWidth();
-
-    static int getWindowHeight();
-
-    static void setWindowSize(const int& w, const int& h);
-
     static void setBackgroundColor(unsigned int r, unsigned int g, unsigned int b);
-
-    static string getWindowTitle();
-
-    static void setWindowTitle(const string& title);
 
     /**
      * Add a render layer.
