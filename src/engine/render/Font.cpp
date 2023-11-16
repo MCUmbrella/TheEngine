@@ -6,7 +6,7 @@
 #include "../exception/EngineException.h"
 #include "../exception/IllegalArgumentException.h"
 
-Font::Font(const string& path) : path(path)
+Font::Font(const string& name, const string& path) : name(name), path(path)
 {
     loadSdlFont(32);
 }
@@ -36,4 +36,9 @@ TTF_Font* Font::getSdlFont(const int& pt)
     return sdlFont.contains(pt)
            ? sdlFont.at(pt)
            : loadSdlFont(pt);
+}
+
+string Font::toString()
+{
+    return "Font \"" + name + "\" (file: " + path + ")";
 }

@@ -146,6 +146,11 @@ void LuaRuntime::init()
             .addStaticFunction("removeLayer", &RenderManager::removeLayer)
             .addStaticFunction("getLayer", &RenderManager::getLayer)
             .addStaticFunction("hasLayer", &RenderManager::hasLayer)
+            .addStaticFunction("loadFont", [](const string& name, const string& path){
+                RenderManager::loadFont(name, ConfigManager::getUserDataPath() + "/assets/fonts/" + path);
+            })
+            .addStaticFunction("unloadFont", &RenderManager::unloadFont)
+            .addStaticFunction("hasFont", &RenderManager::hasFont)
     );
 
     logInfo << "-- RenderEntity";

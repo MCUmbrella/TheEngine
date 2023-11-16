@@ -10,7 +10,6 @@
 #include "RenderLayer.h"
 #include "../ConfigManager.h"
 #include "../exception/IllegalArgumentException.h"
-#include "Font.h"
 
 using std::to_string;
 
@@ -24,7 +23,7 @@ static unsigned int bgB = 63U;
 // font
 static string defaultFontPath;
 static Font* defaultFont = nullptr;
-static std::unordered_map<string, Font> externalFonts;
+static std::unordered_map<string, Font*> externalFonts;
 
 // texture
 static string placeholderTexturePath;
@@ -76,7 +75,7 @@ void RenderManager::init()
 
     // load default font
     defaultFontPath = ConfigManager::getEngineDataPath() + "/assets/fonts/default.ttf";
-    defaultFont = new Font(defaultFontPath);
+    defaultFont = new Font("", defaultFontPath);
 
     addLayer(0);
 
@@ -88,7 +87,11 @@ void RenderManager::shutdown()
     logInfo << "Shutting down render manager";
     // font
     delete defaultFont;
-    externalFonts.clear();
+    for(auto& fp : externalFonts)
+    {
+        logWarn << "WHO FORGOT TO UNLOAD FONT? " << fp.second->toString();
+        delete fp.second;
+    }
     TTF_Quit();
     for(auto& l : layers)
         l.second.clear();
@@ -263,4 +266,34 @@ RenderLayer* RenderManager::reorderLayer(const int& src, const int& target) //TO
             "Parameter 'src' and 'target' in RenderManager.reorderLayer(src, target) cannot be the same"
         );
     return &(layers.at(target));
+}
+
+Font& RenderManager::loadFont(const string& name, const string& path)
+{
+    if(hasFont(name))
+        throw EngineException("Font already loaded: " + name);
+    Font* font = externalFonts.emplace(name, new Font(name, path)).first->second;
+    logInfo << "Loaded " << font->toString();
+    return *font;
+}
+
+void RenderManager::unloadFont(const string& name)
+{
+    if(!hasFont(name))
+        throw EngineException("Font not found: " + name);
+    logInfo << "Unloading " << externalFonts.at(name)->toString();
+    delete externalFonts.at(name);
+    externalFonts.erase(name);
+}
+
+Font& RenderManager::getFont(const string& name)
+{
+    if(!hasFont(name))
+        throw EngineException("Font not found: " + name);
+    return *externalFonts.at(name);
+}
+
+bool RenderManager::hasFont(const string& name)
+{
+    return externalFonts.contains(name);
 }

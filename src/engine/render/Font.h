@@ -14,17 +14,23 @@ using std::string;
 class Font
 {
 private:
-    const string path;
+    const string name, path;
     std::unordered_map<int, TTF_Font*> sdlFont;
 
     TTF_Font* loadSdlFont(const int& pt);
 
 public:
-    explicit Font(const string& path);
+    Font(const Font&) = delete;
+
+    Font& operator=(const Font&) = delete;
+
+    explicit Font(const string& name, const string& path);
 
     ~Font();
 
     TTF_Font* getSdlFont(const int& pt);
+
+    string toString();
 };
 
 #endif //THEENGINE_FONT_H

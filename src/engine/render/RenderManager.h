@@ -12,6 +12,7 @@
 #include "RenderEntity.h"
 #include "RenderLayer.h"
 #include "Window.h"
+#include "Font.h"
 
 using std::string;
 
@@ -117,6 +118,14 @@ public:
         const unsigned char& r, const unsigned char& g, const unsigned char& b, const unsigned char& a,
         const int& pt
     );
+
+    static Font& loadFont(const string& name, const string& path);
+
+    static void unloadFont(const string& name);
+
+    static Font& getFont(const string& name);
+
+    static bool hasFont(const string& name);
 };
 
 #endif //THEENGINE_RENDERMANAGER_H
