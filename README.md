@@ -44,5 +44,3 @@ rm -f ./cmake_install.cmake ./CMakeCache.txt ./Makefile ./TheEngine
 
 # TODO
 - statically link libsdl2 and liblua
-- custom fonts
-- saves management

@@ -199,7 +199,13 @@ void LuaRuntime::init()
         UserdataMetatable<RenderLayer>()
             .addFunction("getOrder", &RenderLayer::getOrder)
             .addFunction("addEntity", &RenderLayer::addEntity_l)
-            .addFunction("addText", &RenderLayer::addText)
+            .addOverloadedFunctions(
+                "addText",
+                static_cast<TextRenderEntity* (RenderLayer::*)(const string&, const string&, const int&)> (&RenderLayer::addText),
+                static_cast<TextRenderEntity* (RenderLayer::*)(const string&, const string&)> (&RenderLayer::addText),
+                static_cast<TextRenderEntity* (RenderLayer::*)(const string&, const int&)> (&RenderLayer::addText),
+                static_cast<TextRenderEntity* (RenderLayer::*)(const string&)> (&RenderLayer::addText)
+            )
             .addFunction("removeEntity", &RenderLayer::removeEntity)
             .addFunction("getEntity", &RenderLayer::getEntity)
             .addFunction("hasEntity", &RenderLayer::hasEntity)

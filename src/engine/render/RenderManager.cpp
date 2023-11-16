@@ -210,11 +210,12 @@ void RenderManager::placeTexture(RenderEntity& re)
 SDL_Texture* RenderManager::text2Texture(
     const string& text,
     const unsigned char& r, const unsigned char& g, const unsigned char& b, const unsigned char& a,
+    const string& fontName,
     const int& pt
 )
 {
     SDL_Surface* surface = TTF_RenderUTF8_Blended(
-        defaultFont->getSdlFont(pt),
+        getFont(fontName).getSdlFont(pt),
         text.c_str(),
         SDL_Color{r, g, b, a}
     );
@@ -270,6 +271,8 @@ RenderLayer* RenderManager::reorderLayer(const int& src, const int& target) //TO
 
 Font& RenderManager::loadFont(const string& name, const string& path)
 {
+    if(name.empty())
+        throw IllegalArgumentException("Parameter 'name' in RenderManager.loadFont(name, path) cannot be empty");
     if(hasFont(name))
         throw EngineException("Font already loaded: " + name);
     Font* font = externalFonts.emplace(name, new Font(name, path)).first->second;
@@ -279,6 +282,8 @@ Font& RenderManager::loadFont(const string& name, const string& path)
 
 void RenderManager::unloadFont(const string& name)
 {
+    if(name.empty())
+        throw IllegalArgumentException("Parameter 'name' in RenderManager.unloadFont(name, path) cannot be empty");
     if(!hasFont(name))
         throw EngineException("Font not found: " + name);
     logInfo << "Unloading " << externalFonts.at(name)->toString();
@@ -290,10 +295,10 @@ Font& RenderManager::getFont(const string& name)
 {
     if(!hasFont(name))
         throw EngineException("Font not found: " + name);
-    return *externalFonts.at(name);
+    return name.empty() ? *defaultFont : *externalFonts.at(name);
 }
 
 bool RenderManager::hasFont(const string& name)
 {
-    return externalFonts.contains(name);
+    return name.empty() || externalFonts.contains(name);
 }

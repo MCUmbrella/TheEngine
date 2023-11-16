@@ -27,12 +27,27 @@ RenderEntity* RenderLayer::addEntity_l(const string& texturePath)
     return addEntity(ConfigManager::getUserDataPath() + "/assets/textures/" + texturePath);
 }
 
-TextRenderEntity* RenderLayer::addText(const string& content)
+TextRenderEntity* RenderLayer::addText(const string& content, const string& fontName, const int& pt)
 {
     int64_t id = CommonUtil::snowflakeId();
-    auto p = renderEntities.emplace(id, std::make_shared<TextRenderEntity>(id, content));
+    auto p = renderEntities.emplace(id, std::make_shared<TextRenderEntity>(id, content, fontName, pt));
     const auto& it = p.first;
     return dynamic_cast<TextRenderEntity*>(it->second.get());
+}
+
+TextRenderEntity* RenderLayer::addText(const string& content, const string& fontName)
+{
+    return addText(content, fontName, 32);
+}
+
+TextRenderEntity* RenderLayer::addText(const string& content, const int& pt)
+{
+    return addText(content, "", pt);
+}
+
+TextRenderEntity* RenderLayer::addText(const string& content)
+{
+    return addText(content, "", 32);
 }
 
 void RenderLayer::removeEntity(const int64_t& id)

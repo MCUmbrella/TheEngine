@@ -104,28 +104,55 @@ public:
     static void placeTexture(RenderEntity& re);
 
     /**
+     * Load a font file as Font object.
+     * @param name The name of the Font object.
+     * @param path The path to the font file that the object uses.
+     * @return The reference to the Font object.
+     * @throw IllegalArgumentException if 'name' is empty.
+     * @throw EngineException if the file has failed to
+     * load, or the font with this name already exists.
+     */
+    static Font& loadFont(const string& name, const string& path);
+
+    /**
+     * Unload a font.
+     * @param name The name of the Font object.
+     * @throw IllegalArgumentException if 'name' is empty.
+     * @throw EngineException if there's no Font object with this name.
+     */
+    static void unloadFont(const string& name);
+
+    /**
+     * Get a font.
+     * @param name The name of the Font object.
+     * @return The loaded font with that name. If
+     * the name is empty, return the default font.
+     * @throw EngineException if there's no Font object with this name.
+     */
+    static Font& getFont(const string& name);
+
+    /**
+     * Check if a Font object with the specified name exists.
+     */
+    static bool hasFont(const string& name);
+
+    /**
      * Convert a text to the texture object.
      * @param text The text that needs to be converted.
      * @param r RGB value (red amount).
      * @param g RGB value (green amount).
      * @param b RGB value (blue amount).
-     * @param a Alpha value (transparency amount).
+     * @param a Alpha value (visibility).
+     * @param fontName The name of the Font object to use.
      * @param pt The size of the font.
      * NOTICE: The RGB and Alpha amount is valid in 0~255.
      */
     static SDL_Texture* text2Texture(
         const string& text,
         const unsigned char& r, const unsigned char& g, const unsigned char& b, const unsigned char& a,
+        const string& fontName,
         const int& pt
     );
-
-    static Font& loadFont(const string& name, const string& path);
-
-    static void unloadFont(const string& name);
-
-    static Font& getFont(const string& name);
-
-    static bool hasFont(const string& name);
 };
 
 #endif //THEENGINE_RENDERMANAGER_H

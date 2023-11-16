@@ -36,8 +36,16 @@ public:
     /**
      * Add a new text entity to the layer.
      * @param content The content of the text entity.
+     * @param fontName The name of the font to use.
+     * @param pt The size of the text.
      * @return The pointer to the newly added entity.
      */
+    TextRenderEntity* addText(const string& content, const string& fontName, const int& pt);
+
+    TextRenderEntity* addText(const string& content, const string& fontName);
+
+    TextRenderEntity* addText(const string& content, const int& pt);
+
     TextRenderEntity* addText(const string& content);
 
     /**

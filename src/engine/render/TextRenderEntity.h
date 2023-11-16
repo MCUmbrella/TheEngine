@@ -22,8 +22,11 @@ class TextRenderEntity : public RenderEntity
 {
 private:
     string content;
+    string fontName;
+    int pt;
 public:
-    TextRenderEntity(const int64_t& id, const string& content);
+
+    TextRenderEntity(const int64_t& id, const string& content, const string& fontName, const int& pt);
 
     ~TextRenderEntity();
 
