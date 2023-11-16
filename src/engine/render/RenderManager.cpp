@@ -10,27 +10,27 @@
 #include "RenderLayer.h"
 #include "../ConfigManager.h"
 #include "../exception/IllegalArgumentException.h"
+#include "Font.h"
 
 using std::to_string;
 
-static string placeholderTexturePath;
-static SDL_Texture* placeholderTexture = nullptr;
-
+// basics
 static Window* window = nullptr;
 static SDL_Renderer* renderer = nullptr;
 static unsigned int bgR = 0U;
 static unsigned int bgG = 31U;
 static unsigned int bgB = 63U;
 
+// font
 static string defaultFontPath;
-static TTF_Font* font16 = nullptr;
-static TTF_Font* font24 = nullptr;
-static TTF_Font* font32 = nullptr;
-static TTF_Font* font40 = nullptr;
-static TTF_Font* font48 = nullptr;
+static Font* defaultFont = nullptr;
+static std::unordered_map<string, Font> externalFonts;
 
-static std::map<int, RenderLayer> layers;
+// texture
+static string placeholderTexturePath;
+static SDL_Texture* placeholderTexture = nullptr;
 static std::unordered_map<string, SDL_Texture*> loadedTextures;
+static std::map<int, RenderLayer> layers;
 
 const RenderManager& RenderManager::getInstance()
 {
@@ -69,18 +69,14 @@ void RenderManager::init()
     // load placeholder texture
     placeholderTexturePath = ConfigManager::getEngineDataPath() + "/assets/textures/misc/placeholder.png";
     IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
-    if((placeholderTexture = loadTexture(placeholderTexturePath)) == nullptr)
-        throw EngineException("Is the placeholder texture file \"" + string(placeholderTexturePath) + "\" OK?");
-    loadedTextures[placeholderTexturePath] = placeholderTexture;
+    if((placeholderTexture = IMG_LoadTexture(renderer, placeholderTexturePath.c_str())) == nullptr)
+        throw EngineException(
+            "Failed to load placeholder texture file \"" + placeholderTexturePath + "\": " + SDL_GetError()
+        );
 
     // load default font
     defaultFontPath = ConfigManager::getEngineDataPath() + "/assets/fonts/default.ttf";
-    if((font16 = TTF_OpenFont(defaultFontPath.c_str(), 16)) == nullptr)
-        throw EngineException("Is the default font file \"" + defaultFontPath + "\" OK?");
-    font24 = TTF_OpenFont(defaultFontPath.c_str(), 24);
-    font32 = TTF_OpenFont(defaultFontPath.c_str(), 32);
-    font40 = TTF_OpenFont(defaultFontPath.c_str(), 40);
-    font48 = TTF_OpenFont(defaultFontPath.c_str(), 48);
+    defaultFont = new Font(defaultFontPath);
 
     addLayer(0);
 
@@ -90,19 +86,25 @@ void RenderManager::init()
 void RenderManager::shutdown()
 {
     logInfo << "Shutting down render manager";
+    // font
+    delete defaultFont;
+    externalFonts.clear();
+    TTF_Quit();
     for(auto& l : layers)
         l.second.clear();
+    // texture
+    layers.clear();
+    for(auto& tp : loadedTextures)
+    {
+        logWarn << "WHO FORGOT TO UNLOAD TEXTURE? File: " << tp.first << ", &: " << tp.second;
+        if(tp.second != placeholderTexture)
+            SDL_DestroyTexture(tp.second);
+    }
+    SDL_DestroyTexture(placeholderTexture);
     IMG_Quit();
+    // basics
     SDL_DestroyRenderer(renderer);
     delete window;
-    TTF_Quit();
-    if(loadedTextures.size() != 1)
-    {
-        logWarn << "WHO FORGOT TO UNLOAD TEXTURES?";
-        logWarn << "Loaded textures (" << loadedTextures.size() << "):";
-        for(auto& tp : loadedTextures)
-            logWarn << "-- " << tp.first;
-    }
     logInfo << "Render manager shutted down";
 }
 
@@ -123,22 +125,6 @@ void RenderManager::setBackgroundColor(unsigned int r, unsigned int g, unsigned 
     bgG = g;
     bgB = b;
     SDL_SetRenderDrawColor(renderer, bgR, bgG, bgB, 255);
-}
-
-int RenderManager::getTextureWidth(SDL_Texture* texture)
-{
-    if(texture == nullptr) throw EngineException("Null pointer passed to getTextureWidth()");
-    int w;
-    SDL_QueryTexture(texture, nullptr, nullptr, &w, nullptr);
-    return w;
-}
-
-int RenderManager::getTextureHeight(SDL_Texture* texture)
-{
-    if(texture == nullptr) throw EngineException("Null pointer passed to getTextureHeight()");
-    int h;
-    SDL_QueryTexture(texture, nullptr, nullptr, nullptr, &h);
-    return h;
 }
 
 SDL_Texture* RenderManager::loadTexture(const string& path)
@@ -168,7 +154,7 @@ bool RenderManager::unloadTexture(const string& path)
     bool unloaded = false;
     if(loadedTextures.contains(path))
     {
-        if(loadedTextures[path] != placeholderTexture)
+        if(loadedTextures.at(path) != placeholderTexture)
         {
             logInfo << "Unloading texture: " << path;
             SDL_DestroyTexture(loadedTextures.at(path));
@@ -221,32 +207,16 @@ void RenderManager::placeTexture(RenderEntity& re)
 SDL_Texture* RenderManager::text2Texture(
     const string& text,
     const unsigned char& r, const unsigned char& g, const unsigned char& b, const unsigned char& a,
-    const FontSize& size
+    const int& pt
 )
 {
-    SDL_Color color;
-    color.r = r;
-    color.g = g;
-    color.b = b;
-    color.a = a;
-    SDL_Surface* surface;
-    surface = TTF_RenderUTF8_Blended(
-        size == FontSize::XL ? font48 :
-        size == FontSize::L ? font40 :
-        size == FontSize::M ? font32 :
-        size == FontSize::S ? font24 :
-        font16,
-        text.c_str(), color
+    SDL_Surface* surface = TTF_RenderUTF8_Blended(
+        defaultFont->getSdlFont(pt),
+        text.c_str(),
+        SDL_Color{r, g, b, a}
     );
-    return surfaceToTexture(surface, true);
-}
-
-SDL_Texture* RenderManager::surfaceToTexture(SDL_Surface* surface, const bool& destroySurface)
-{
-    SDL_Texture* texture;
-    texture = SDL_CreateTextureFromSurface(renderer, surface);
-    if(destroySurface)
-        SDL_FreeSurface(surface);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+    SDL_FreeSurface(surface);
     return texture;
 }
 
@@ -265,7 +235,7 @@ RenderLayer* RenderManager::addLayer(const int& order)
 void RenderManager::removeLayer(const int& order)
 {
     if(order == 0)
-        throw IllegalArgumentException("Layer 0 cannot be removed");
+        throw IllegalArgumentException("Parameter 'order' in RenderManager.removeLayer(order) cannot be 0");
     if(!hasLayer(order))
         throw EngineException("Layer not found: " + to_string(order));
     layers.erase(order);
@@ -284,11 +254,13 @@ bool RenderManager::hasLayer(const int& order)
     return layers.find(order) != layers.end();
 }
 
-RenderLayer* RenderManager::reorderLayer(const int& src, const int& target)
+RenderLayer* RenderManager::reorderLayer(const int& src, const int& target) //TODO
 {
     if(src == 0 || target == 0)
-        throw IllegalArgumentException("Layer 0 cannot be reordered");
+        throw IllegalArgumentException("Parameter 'order' in RenderManager.reorderLayer(order) cannot be 0");
     if(src == target)
-        throw IllegalArgumentException("src and target in reorderLayer() cannot be the same: " + to_string(src));
-    return &(layers.at(src));
+        throw IllegalArgumentException(
+            "Parameter 'src' and 'target' in RenderManager.reorderLayer(src, target) cannot be the same"
+        );
+    return &(layers.at(target));
 }

@@ -18,7 +18,7 @@ pkg_search_module(SDL2_TTF REQUIRED SDL2_ttf)
 find_package(Lua 5.4 REQUIRED)
 include_directories(${LUA_INCLUDE_DIR})
 
-add_compile_options(-Wall -Og -gdwarf-4 -g)
+add_compile_options(-Wall -Wextra -Werror=return-type -Og -gdwarf-4 -g)
 #add_compile_options(-Wall -O4)
 #add_link_options(-static)
 add_executable(TheEngine ${SOURCES})

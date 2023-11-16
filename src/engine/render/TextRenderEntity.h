@@ -30,7 +30,7 @@ public:
     /**
      * Don't do this. You will regret that.
      */
-    void setTexture(const string& path) override;
+    void setTexture(const string&) override;
 
     /**
      * Get the content of the text entity.

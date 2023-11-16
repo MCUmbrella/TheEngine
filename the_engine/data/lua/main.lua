@@ -35,6 +35,6 @@ function tick()
 end
 
 function cleanup()
-    Runtime.log("Placeholder level ended")
     RenderManager.unloadTexture(CURSOR_TEXTURE)
+    Runtime.log("Placeholder level ended")
 end 

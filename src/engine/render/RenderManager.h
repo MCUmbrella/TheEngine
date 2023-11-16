@@ -9,7 +9,6 @@
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
-#include "FontSize.h"
 #include "RenderEntity.h"
 #include "RenderLayer.h"
 #include "Window.h"
@@ -74,16 +73,6 @@ public:
     static RenderLayer* reorderLayer(const int& src, const int& target); //TODO
 
     /**
-     * Get the width of a texture.
-     */
-    static int getTextureWidth(SDL_Texture* texture);
-
-    /**
-     * Get the height of a texture.
-     */
-    static int getTextureHeight(SDL_Texture* texture);
-
-    /**
      * Load a texture from file.
      * @param path The path of the texture file.
      * @return The pointer of the texture's SDL_Texture object,
@@ -120,17 +109,14 @@ public:
      * @param g RGB value (green amount).
      * @param b RGB value (blue amount).
      * @param a Alpha value (transparency amount).
-     * @param size FontSize: XS (16pt), S (24pt),
-     *             M (32pt), L (40pt), XL (48pt).
+     * @param pt The size of the font.
      * NOTICE: The RGB and Alpha amount is valid in 0~255.
      */
     static SDL_Texture* text2Texture(
         const string& text,
         const unsigned char& r, const unsigned char& g, const unsigned char& b, const unsigned char& a,
-        const FontSize& size
+        const int& pt
     );
-
-    static SDL_Texture* surfaceToTexture(SDL_Surface* surface, const bool& destroySurface);
 };
 
 #endif //THEENGINE_RENDERMANAGER_H
