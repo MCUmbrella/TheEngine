@@ -29,8 +29,6 @@ public:
 
     Engine& operator=(const Engine&) = delete;
 
-    const static Engine& getInstance();
-
     /**
      * Initialize the Engine and related components.
      * This function can be called only once and must be called

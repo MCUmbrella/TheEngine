@@ -18,12 +18,6 @@ static unordered_map<string, Mix_Music*> mixMusics;
 static unordered_map<string /*name*/, Sound> sounds;
 static unordered_map<string, Music> musics;
 
-const SoundManager& SoundManager::getInstance()
-{
-    static SoundManager THE_SOUND_MANAGER;
-    return THE_SOUND_MANAGER;
-}
-
 
 /*================================================
  *                    MANAGER

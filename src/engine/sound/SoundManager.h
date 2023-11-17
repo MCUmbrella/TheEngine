@@ -25,8 +25,6 @@ public:
 
     SoundManager& operator=(const SoundManager&) = delete;
 
-    const static SoundManager& getInstance();
-
     /*================================================
      *                    MANAGER
      ================================================*/

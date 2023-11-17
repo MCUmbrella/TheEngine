@@ -12,6 +12,8 @@
 
 using kaguya::UserdataMetatable;
 
+static State L;
+
 // this function is used in Lua scripts
 void LuaRuntime::log_l(const int& lvl, const string& msg)
 {
@@ -33,9 +35,8 @@ void LuaRuntime::log_l(const string& msg)
     log_l(0, msg);
 }
 
-State& LuaRuntime::getLua()
+State& LuaRuntime::getLuaState()
 {
-    static State L;
     return L;
 }
 
@@ -43,9 +44,8 @@ void LuaRuntime::init()
 {
     logInfo << "Initializing Lua runtime";
 
-    State& l = getLua();
-    l.openlibs();
-    l.setErrorHandler([](int status, const char* msg){
+    L.openlibs();
+    L.setErrorHandler([](int status, const char* msg){
         throw LuaException(
             "Uncaught error in Lua runtime"
             "\nStatus code: " + std::to_string(status) +
@@ -56,7 +56,7 @@ void LuaRuntime::init()
     logInfo << "Registering classes";
 
     logInfo << "-- Runtime";
-    l["Runtime"].setClass(
+    L["Runtime"].setClass(
         UserdataMetatable<LuaRuntime>()
             .addOverloadedFunctions(
                 "log",
@@ -69,7 +69,7 @@ void LuaRuntime::init()
     );
 
     logInfo << "-- Engine";
-    l["Engine"].setClass(
+    L["Engine"].setClass(
         UserdataMetatable<Engine>()
             .addStaticFunction("stop", [](){
                 logInfo << "Script called Engine.stop()";
@@ -80,7 +80,7 @@ void LuaRuntime::init()
     );
 
     logInfo << "-- Mouse";
-    l["Mouse"].setClass(
+    L["Mouse"].setClass(
         UserdataMetatable<Mouse>()
             .addStaticFunction("getX", [](){return Engine::getMouse().getX();})
             .addStaticFunction("getY", [](){return Engine::getMouse().getY();})
@@ -106,7 +106,7 @@ void LuaRuntime::init()
     );
 
     logInfo << "-- Keyboard";
-    l["Keyboard"].setClass(
+    L["Keyboard"].setClass(
         UserdataMetatable<Keyboard>()
             .addStaticFunction("holding", [](const int& scancode){return Engine::getKeyboard().holding(scancode);})
             .addStaticFunction("pressed", [](const int& scancode){return Engine::getKeyboard().pressed(scancode);})
@@ -114,7 +114,7 @@ void LuaRuntime::init()
     );
 
     logInfo << "-- Window";
-    l["Window"].setClass(
+    L["Window"].setClass(
         UserdataMetatable<Window>()
             .addStaticFunction("getX", [](){return RenderManager::getWindow()->getX();})
             .addStaticFunction("getY", [](){return RenderManager::getWindow()->getY();})
@@ -133,7 +133,7 @@ void LuaRuntime::init()
     );
 
     logInfo << "-- RenderManager";
-    l["RenderManager"].setClass(
+    L["RenderManager"].setClass(
         UserdataMetatable<RenderManager>()
             .addStaticFunction("setBackgroundColor", &RenderManager::setBackgroundColor)
             .addStaticFunction("loadTexture", [](const string& path){
@@ -154,7 +154,7 @@ void LuaRuntime::init()
     );
 
     logInfo << "-- RenderEntity";
-    l["RenderEntity"].setClass(
+    L["RenderEntity"].setClass(
         UserdataMetatable<RenderEntity>()
             .addProperty("x", &RenderEntity::x)
             .addProperty("y", &RenderEntity::y)
@@ -187,7 +187,7 @@ void LuaRuntime::init()
     );
 
     logInfo << "-- TextRenderEntity";
-    l["TextRenderEntity"].setClass(
+    L["TextRenderEntity"].setClass(
         UserdataMetatable<TextRenderEntity, RenderEntity>()
             .addFunction("setTexture", &TextRenderEntity::setTexture)
             .addFunction("getContent", &TextRenderEntity::getContent)
@@ -195,13 +195,14 @@ void LuaRuntime::init()
     );
 
     logInfo << "-- RenderLayer";
-    l["RenderLayer"].setClass(
+    L["RenderLayer"].setClass(
         UserdataMetatable<RenderLayer>()
             .addFunction("getOrder", &RenderLayer::getOrder)
             .addFunction("addEntity", &RenderLayer::addEntity_l)
             .addOverloadedFunctions(
                 "addText",
-                static_cast<TextRenderEntity* (RenderLayer::*)(const string&, const string&, const int&)> (&RenderLayer::addText),
+                static_cast<TextRenderEntity* (RenderLayer::*)(const string&, const string&,
+                                                               const int&)> (&RenderLayer::addText),
                 static_cast<TextRenderEntity* (RenderLayer::*)(const string&, const string&)> (&RenderLayer::addText),
                 static_cast<TextRenderEntity* (RenderLayer::*)(const string&, const int&)> (&RenderLayer::addText),
                 static_cast<TextRenderEntity* (RenderLayer::*)(const string&)> (&RenderLayer::addText)
@@ -214,7 +215,7 @@ void LuaRuntime::init()
     );
 
     logInfo << "-- SoundManager";
-    l["SoundManager"].setClass(
+    L["SoundManager"].setClass(
         UserdataMetatable<SoundManager>()
             .addStaticFunction("addSound", [](const string& name, const string& path) -> Sound*{
                 return SoundManager::addSound(name, ConfigManager::getUserDataPath() + "/assets/sounds/" + path);
@@ -250,7 +251,7 @@ void LuaRuntime::init()
     );
 
     logInfo << "-- Sound";
-    l["Sound"].setClass(
+    L["Sound"].setClass(
         UserdataMetatable<Sound>()
             .addFunction("getName", &Sound::getName)
             .addFunction("getPath", &Sound::getPath)
@@ -259,7 +260,7 @@ void LuaRuntime::init()
     );
 
     logInfo << "-- Music";
-    l["Music"].setClass(
+    L["Music"].setClass(
         UserdataMetatable<Music>()
             .addFunction("getName", &Music::getName)
             .addFunction("getPath", &Music::getPath)
@@ -271,7 +272,7 @@ void LuaRuntime::init()
     );
 
     logInfo << "-- PlayingSound";
-    l["PlayingSound"].setClass(
+    L["PlayingSound"].setClass(
         UserdataMetatable<PlayingSound>()
             .addFunction("isValid", &PlayingSound::isValid)
             .addFunction("pause", &PlayingSound::pause)
@@ -293,7 +294,7 @@ bool LuaRuntime::runFile(const string& path, const bool& throws)
     bool success = false;
     try
     {
-        success = getLua().dofile(path);
+        success = L.dofile(path);
     }
     catch(LuaException& e)
     {
@@ -307,7 +308,7 @@ bool LuaRuntime::runFile(const string& path, const bool& throws)
 
 bool LuaRuntime::run(const string& content, const bool& throws)
 {
-    bool success = getLua().dostring(content);
+    bool success = L.dostring(content);
     if(throws && !success)
         throw LuaException("Error occurred while executing Lua script: " + content);
     return success;

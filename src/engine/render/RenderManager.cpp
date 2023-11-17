@@ -31,12 +31,6 @@ static SDL_Texture* placeholderTexture = nullptr;
 static std::unordered_map<string, SDL_Texture*> loadedTextures;
 static std::map<int, RenderLayer> layers;
 
-const RenderManager& RenderManager::getInstance()
-{
-    const static RenderManager THE_RENDER_MANAGER;
-    return THE_RENDER_MANAGER;
-}
-
 Window* RenderManager::getWindow()
 {
     return window;

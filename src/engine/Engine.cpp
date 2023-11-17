@@ -21,12 +21,6 @@ static unsigned long tickCounter = 0;
 static Mouse mouse;
 static Keyboard keyboard;
 
-const Engine& Engine::getInstance()
-{
-    const static Engine THE_ENGINE;
-    return THE_ENGINE;
-}
-
 void Engine::pollSDLEvents()
 {
     memcpy(keyboard.keysH_p, keyboard.keysH, sizeof(keyboard.keysH));
@@ -146,7 +140,7 @@ void Engine::mainLoop()
     logInfo << "Entering main loop";
 
     LuaRuntime::runFile(ConfigManager::getUserDataPath() + "/data/lua/main.lua");
-    kaguya::State& l = LuaRuntime::getLua();
+    kaguya::State& l = LuaRuntime::getLuaState();
     for(auto& s : {"prepare", "tick", "cleanup"})
         if(!l[s].isType<kaguya::LuaFunction>())
             throw LuaException(string("Missing Lua function: ") + s);

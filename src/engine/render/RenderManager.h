@@ -28,8 +28,6 @@ public:
 
     RenderManager& operator=(const RenderManager&) = delete;
 
-    const static RenderManager& getInstance();
-
     static Window* getWindow();
 
     static SDL_Renderer* getRenderer();

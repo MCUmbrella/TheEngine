@@ -22,7 +22,7 @@ public:
     /**
      * Get the reference of the Lua state.
      */
-    static State& getLua();
+    static State& getLuaState();
 
     /**
      * Initialize the Lua runtime.
