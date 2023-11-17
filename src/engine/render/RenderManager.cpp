@@ -14,6 +14,8 @@
 using std::to_string;
 
 // basics
+static ConfigManager::EngineConfig& cfgE = ConfigManager::getEngineConfig();
+static ConfigManager::RenderManagerConfig& cfgM = ConfigManager::getRenderManagerConfig();
 static Window* window = nullptr;
 static SDL_Renderer* renderer = nullptr;
 static unsigned int bgR = 0U;
@@ -55,12 +57,16 @@ void RenderManager::init()
     logInfo << "Creating window";
     window = new Window();
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
-    renderer = SDL_CreateRenderer(window->getSdlWindow(), -1, ConfigManager::getSdlRendererFlags());
+    renderer = SDL_CreateRenderer(
+        window->getSdlWindow(),
+        -1,
+        cfgM.rendererFlags()
+    );
     SDL_SetRenderDrawColor(renderer, bgR, bgG, bgB, 255);
     logInfo << "Window created: " << window->getTitle();
 
     // load placeholder texture
-    placeholderTexturePath = ConfigManager::getEngineDataPath() + "/assets/textures/misc/placeholder.png";
+    placeholderTexturePath = cfgE.engineDataPath + "/assets/textures/misc/placeholder.png";
     IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
     if((placeholderTexture = IMG_LoadTexture(renderer, placeholderTexturePath.c_str())) == nullptr)
         throw EngineException(
@@ -68,7 +74,7 @@ void RenderManager::init()
         );
 
     // load default font
-    defaultFontPath = ConfigManager::getEngineDataPath() + "/assets/fonts/default.ttf";
+    defaultFontPath = cfgE.engineDataPath + "/assets/fonts/default.ttf";
     defaultFont = new Font("", defaultFontPath);
 
     addLayer(0);

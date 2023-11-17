@@ -12,6 +12,7 @@
 
 using kaguya::UserdataMetatable;
 
+static ConfigManager::EngineConfig& cfg = ConfigManager::getEngineConfig();
 static State L;
 
 // this function is used in Lua scripts
@@ -64,7 +65,7 @@ void LuaRuntime::init()
                 static_cast<void (*)(const string&)>(log_l)
             )
             .addStaticFunction("execute", [](const string& path){
-                LuaRuntime::runFile(ConfigManager::getUserDataPath() + "/data/lua/" + path);
+                LuaRuntime::runFile(cfg.userDataPath + "/data/lua/" + path);
             })
     );
 
@@ -137,17 +138,17 @@ void LuaRuntime::init()
         UserdataMetatable<RenderManager>()
             .addStaticFunction("setBackgroundColor", &RenderManager::setBackgroundColor)
             .addStaticFunction("loadTexture", [](const string& path){
-                RenderManager::loadTexture(ConfigManager::getUserDataPath() + "/assets/textures/" + path);
+                RenderManager::loadTexture(cfg.userDataPath + "/assets/textures/" + path);
             })
             .addStaticFunction("unloadTexture", [](const string& path){
-                RenderManager::unloadTexture(ConfigManager::getUserDataPath() + "/assets/textures/" + path);
+                RenderManager::unloadTexture(cfg.userDataPath + "/assets/textures/" + path);
             })
             .addStaticFunction("addLayer", &RenderManager::addLayer)
             .addStaticFunction("removeLayer", &RenderManager::removeLayer)
             .addStaticFunction("getLayer", &RenderManager::getLayer)
             .addStaticFunction("hasLayer", &RenderManager::hasLayer)
             .addStaticFunction("loadFont", [](const string& name, const string& path){
-                RenderManager::loadFont(name, ConfigManager::getUserDataPath() + "/assets/fonts/" + path);
+                RenderManager::loadFont(name, cfg.userDataPath + "/assets/fonts/" + path);
             })
             .addStaticFunction("unloadFont", &RenderManager::unloadFont)
             .addStaticFunction("hasFont", &RenderManager::hasFont)
@@ -218,7 +219,7 @@ void LuaRuntime::init()
     L["SoundManager"].setClass(
         UserdataMetatable<SoundManager>()
             .addStaticFunction("addSound", [](const string& name, const string& path) -> Sound*{
-                return SoundManager::addSound(name, ConfigManager::getUserDataPath() + "/assets/sounds/" + path);
+                return SoundManager::addSound(name, cfg.userDataPath + "/assets/sounds/" + path);
             })
             .addStaticFunction("removeSound", &SoundManager::removeSound)
             .addStaticFunction("getSound", &SoundManager::getSound)
@@ -229,7 +230,7 @@ void LuaRuntime::init()
                 static_cast<PlayingSound (*)(const Sound*)>(&SoundManager::playSound)
             )
             .addStaticFunction("addMusic", [](const string& name, const string& path) -> Music*{
-                return SoundManager::addMusic(name, ConfigManager::getUserDataPath() + "/assets/sounds/" + path);
+                return SoundManager::addMusic(name, cfg.userDataPath + "/assets/sounds/" + path);
             })
             .addStaticFunction("removeMusic", &SoundManager::removeMusic)
             .addStaticFunction("getMusic", &SoundManager::getMusic)

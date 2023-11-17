@@ -11,22 +11,8 @@
 
 using nlohmann::json;
 
-static struct
-{
-    string engineDataPath;
-    string userDataPath;
-    int targetTps;
-    bool enableProfiler;
-    // don't worry if the compiler complains about the field is not
-    // initialized, the default value will be set in the future
-} cfgEngine;
-
-static struct
-{
-    bool softwareRender;
-    bool accelerated;
-    bool vsync;
-} cfgRenderManager;
+static ConfigManager::EngineConfig cfgEngine;
+static ConfigManager::RenderManagerConfig cfgRenderManager;
 
 void ConfigManager::loadConfig(const string& path)
 {
@@ -91,31 +77,21 @@ void ConfigManager::loadConfig(const string& path)
     logInfo << "Config loaded";
 }
 
-string ConfigManager::getEngineDataPath()
+ConfigManager::EngineConfig& ConfigManager::getEngineConfig()
 {
-    return cfgEngine.engineDataPath;
+    return cfgEngine;
 }
 
-string ConfigManager::getUserDataPath()
+ConfigManager::RenderManagerConfig& ConfigManager::getRenderManagerConfig()
 {
-    return cfgEngine.userDataPath;
+    return cfgRenderManager;
 }
 
-int ConfigManager::getEngineTargetTps()
-{
-    return cfgEngine.targetTps;
-}
-
-bool ConfigManager::enableProfiler()
-{
-    return cfgEngine.enableProfiler;
-}
-
-unsigned int ConfigManager::getSdlRendererFlags()
+unsigned int ConfigManager::RenderManagerConfig::rendererFlags()
 {
     unsigned int flags = 0;
-    flags |= cfgRenderManager.softwareRender ? SDL_RENDERER_SOFTWARE : 0;
-    flags |= cfgRenderManager.accelerated ? SDL_RENDERER_ACCELERATED : 0;
-    flags |= cfgRenderManager.vsync ? SDL_RENDERER_PRESENTVSYNC : 0;
+    flags |= softwareRender ? SDL_RENDERER_SOFTWARE : 0;
+    flags |= accelerated ? SDL_RENDERER_ACCELERATED : 0;
+    flags |= vsync ? SDL_RENDERER_PRESENTVSYNC : 0;
     return flags;
 }

@@ -24,7 +24,7 @@ RenderEntity* RenderLayer::addEntity(const string& texturePath)
 
 RenderEntity* RenderLayer::addEntity_l(const string& texturePath)
 {
-    return addEntity(ConfigManager::getUserDataPath() + "/assets/textures/" + texturePath);
+    return addEntity(ConfigManager::getEngineConfig().userDataPath + "/assets/textures/" + texturePath);
 }
 
 TextRenderEntity* RenderLayer::addText(const string& content, const string& fontName, const int& pt)

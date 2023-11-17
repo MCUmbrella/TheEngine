@@ -14,6 +14,7 @@
 
 using std::bitset;
 
+static ConfigManager::EngineConfig& cfg = ConfigManager::getEngineConfig();
 static EngineState state = UNINITIALIZED;
 static int targetTps;
 static long maxNsPerTick;
@@ -104,15 +105,15 @@ void Engine::init(const string& configPath)
         state = INITIALIZING;
         // load config
         ConfigManager::loadConfig(configPath);
-        targetTps = ConfigManager::getEngineTargetTps();
+        targetTps = cfg.targetTps;
         maxNsPerTick = 1000000000L / targetTps;
         // initialize subsystems
         LuaRuntime::init();
-        LuaRuntime::runFile(ConfigManager::getEngineDataPath() + "/data/lua/preInit.lua");
+        LuaRuntime::runFile(cfg.engineDataPath + "/data/lua/preInit.lua");
         RenderManager::init();
         SoundManager::init();
         state = STOPPED;
-        LuaRuntime::runFile(ConfigManager::getEngineDataPath() + "/data/lua/postInit.lua");
+        LuaRuntime::runFile(cfg.engineDataPath + "/data/lua/postInit.lua");
         logInfo << "The Engine is ready";
     }
     else
@@ -139,7 +140,7 @@ void Engine::mainLoop()
 {
     logInfo << "Entering main loop";
 
-    LuaRuntime::runFile(ConfigManager::getUserDataPath() + "/data/lua/main.lua");
+    LuaRuntime::runFile(cfg.userDataPath + "/data/lua/main.lua");
     kaguya::State& l = LuaRuntime::getLuaState();
     for(auto& s : {"prepare", "tick", "cleanup"})
         if(!l[s].isType<kaguya::LuaFunction>())
@@ -172,12 +173,12 @@ void Engine::mainLoop()
         }
 
         // tick profiler things
-        if(ConfigManager::enableProfiler())
+        if(cfg.enableProfiler)
         {
             tickProfiler += executionTime;
-            if(tickCounter % ConfigManager::getEngineTargetTps() == ConfigManager::getEngineTargetTps() - 1)
+            if(tickCounter % cfg.targetTps == cfg.targetTps - 1)
             {
-                long double avg = (long double) tickProfiler / ConfigManager::getEngineTargetTps();
+                long double avg = (long double) tickProfiler / cfg.targetTps;
                 logInfo << "Average tick cost: " << avg
                         << "ns -- " << avg * 100 / maxNsPerTick << "% of max tick execution time";
                 tickProfiler = 0;

@@ -87,7 +87,7 @@ void RenderEntity::setTexture(const string& path)
 
 void RenderEntity::setTexture_l(const string& path)
 {
-    setTexture(ConfigManager::getUserDataPath() + "/assets/textures/" + path);
+    setTexture(ConfigManager::getEngineConfig().userDataPath + "/assets/textures/" + path);
 }
 
 int RenderEntity::getFlip()
