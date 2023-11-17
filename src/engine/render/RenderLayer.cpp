@@ -6,7 +6,6 @@
 #include "../util/CommonUtil.h"
 #include "../exception/EngineException.h"
 #include "RenderManager.h"
-#include "../ConfigManager.h"
 
 int RenderLayer::getOrder()
 {
@@ -20,11 +19,6 @@ RenderEntity* RenderLayer::addEntity(const string& texturePath)
     auto p = renderEntities.emplace(id, std::make_shared<RenderEntity>(id, texturePath));
     const auto& it = p.first;
     return it->second.get();
-}
-
-RenderEntity* RenderLayer::addEntity_l(const string& texturePath)
-{
-    return addEntity(ConfigManager::getEngineConfig().userDataPath + "/assets/textures/" + texturePath);
 }
 
 TextRenderEntity* RenderLayer::addText(const string& content, const string& fontName, const int& pt)

@@ -4,7 +4,6 @@
 
 #include "RenderEntity.h"
 #include "RenderManager.h"
-#include "../ConfigManager.h"
 #include "../exception/IllegalArgumentException.h"
 
 RenderEntity::RenderEntity(const int64_t& id) : id(id)
@@ -83,11 +82,6 @@ void RenderEntity::setTexture(const string& path)
 {
     sdlTexture = RenderManager::getTexture(path);
     resetCrop();
-}
-
-void RenderEntity::setTexture_l(const string& path)
-{
-    setTexture(ConfigManager::getEngineConfig().userDataPath + "/assets/textures/" + path);
 }
 
 int RenderEntity::getFlip()

@@ -95,9 +95,6 @@ public:
      */
     virtual void setTexture(const string& path);
 
-    // this function is used in Lua scripts
-    void setTexture_l(const string& path);
-
     /**
      * Get the mode of the texture's flip.
      * @return 0: none, 1: horizontal, 2: vertical.

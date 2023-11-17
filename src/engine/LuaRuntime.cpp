@@ -180,7 +180,9 @@ void LuaRuntime::init()
             .addFunction("setTextureSize", &RenderEntity::setTextureSize)
             .addFunction("resetTextureSize", &RenderEntity::resetTextureSize)
             .addFunction("resetHitboxSize", &RenderEntity::resetHitboxSize)
-            .addFunction("setTexture", &RenderEntity::setTexture_l)
+            .addStaticFunction("setTexture", [](RenderEntity* instance, const string& path){
+                instance->setTexture(cfg.userDataPath + "/assets/textures/" + path);
+            }) // actually it is member function, not static
             .addFunction("getFlip", &RenderEntity::getFlip)
             .addFunction("setFlip", &RenderEntity::setFlip)
             .addFunction("setCrop", &RenderEntity::setCrop)
@@ -199,7 +201,9 @@ void LuaRuntime::init()
     L["RenderLayer"].setClass(
         UserdataMetatable<RenderLayer>()
             .addFunction("getOrder", &RenderLayer::getOrder)
-            .addFunction("addEntity", &RenderLayer::addEntity_l)
+            .addStaticFunction("addEntity", [](RenderLayer* instance, const string& texturePath){
+                return instance->addEntity(cfg.userDataPath + "/assets/textures/" + texturePath);
+            })
             .addOverloadedFunctions(
                 "addText",
                 static_cast<TextRenderEntity* (RenderLayer::*)(const string&, const string&,

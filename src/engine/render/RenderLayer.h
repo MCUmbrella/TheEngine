@@ -30,9 +30,6 @@ public:
      */
     RenderEntity* addEntity(const string& texturePath);
 
-    // this function is used in Lua scripts
-    RenderEntity* addEntity_l(const string& texturePath);
-
     /**
      * Add a new text entity to the layer.
      * @param content The content of the text entity.
