@@ -49,11 +49,11 @@ then
         if playerOnLeft() then -- wall jump
             vy = -5
             vx = 5
-            SoundManager.playSound(WALLJUMP_SOUND)
+            WALLJUMP_SOUND:play()
         elseif playerOnRight() then
             vy = -5
             vx = -5
-            SoundManager.playSound(WALLJUMP_SOUND:getName())
+            WALLJUMP_SOUND:play()
         end
     end
 end

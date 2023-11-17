@@ -222,18 +222,13 @@ void LuaRuntime::init()
     logInfo << "-- SoundManager";
     L["SoundManager"].setClass(
         UserdataMetatable<SoundManager>()
-            .addStaticFunction("addSound", [](const string& name, const string& path) -> Sound*{
+            .addStaticFunction("addSound", [](const string& name, const string& path){
                 return SoundManager::addSound(name, cfg.userDataPath + "/assets/sounds/" + path);
             })
             .addStaticFunction("removeSound", &SoundManager::removeSound)
             .addStaticFunction("getSound", &SoundManager::getSound)
             .addStaticFunction("hasSound", &SoundManager::hasSound)
-            .addOverloadedFunctions(
-                "playSound",
-                static_cast<PlayingSound (*)(const string&)>(&SoundManager::playSound),
-                static_cast<PlayingSound (*)(const Sound*)>(&SoundManager::playSound)
-            )
-            .addStaticFunction("addMusic", [](const string& name, const string& path) -> Music*{
+            .addStaticFunction("addMusic", [](const string& name, const string& path){
                 return SoundManager::addMusic(name, cfg.userDataPath + "/assets/sounds/" + path);
             })
             .addStaticFunction("removeMusic", &SoundManager::removeMusic)

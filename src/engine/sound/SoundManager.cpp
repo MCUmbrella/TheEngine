@@ -85,7 +85,7 @@ void SoundManager::gc()
 Mix_Chunk* SoundManager::loadMixChunk(const string& path)
 {
     if(hasMixChunk(path))
-        return mixChunks[path];
+        return mixChunks.at(path);
     logInfo << "Loading sound file: " << path;
     Mix_Chunk* p = Mix_LoadWAV(path.c_str());
     if(p == nullptr)
@@ -97,7 +97,7 @@ Mix_Chunk* SoundManager::loadMixChunk(const string& path)
 Mix_Chunk* SoundManager::getMixChunk(const string& path)
 {
     if(hasMixChunk(path))
-        return mixChunks[path];
+        return mixChunks.at(path);
     throw EngineException("Sound file not loaded: " + path);
 }
 
@@ -106,8 +106,8 @@ void SoundManager::unloadMixChunk(const string& path)
     logInfo << "Unloading sound file: " << path;
     if(hasMixChunk(path))
     {
-        if(mixChunks[path] != nullptr)
-            Mix_FreeChunk(mixChunks[path]);
+        if(mixChunks.at(path) != nullptr)
+            Mix_FreeChunk(mixChunks.at(path));
         mixChunks.erase(path);
     }
     throw EngineException("Sound file not loaded: " + path);
@@ -150,18 +150,6 @@ void SoundManager::removeSound(const string& name)
 bool SoundManager::hasSound(const string& name)
 {
     return sounds.contains(name);
-}
-
-PlayingSound SoundManager::playSound(const Sound* sound)
-{
-    return sound->mixChunk == nullptr ?
-           PlayingSound(nullptr, -1) :
-           PlayingSound(sound->mixChunk, Mix_PlayChannel(-1, sound->mixChunk, false));
-}
-
-PlayingSound SoundManager::playSound(const string& name)
-{
-    return playSound(getSound(name));
 }
 
 

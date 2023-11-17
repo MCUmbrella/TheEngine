@@ -113,23 +113,6 @@ public:
      */
     static bool hasSound(const string& name);
 
-    /**
-     * Play a Sound object.
-     * If the internal pointer of the sound is nullptr, this
-     * function will not do anything.
-     * @param sound The pointer to the Sound object.
-     * @return A PlayingSound object.
-     * @sa PlayingSound.h
-     */
-    static PlayingSound playSound(const Sound* sound);
-
-    /**
-     * Play a sound by its name.
-     * @throw EngineException if the sound with the specified
-     * name was not found.
-     */
-    static PlayingSound playSound(const string& name);
-
     /*================================================
      *                     MUSIC
      ================================================*/

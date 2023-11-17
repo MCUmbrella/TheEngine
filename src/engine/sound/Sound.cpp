@@ -31,7 +31,9 @@ Sound* Sound::reassign(const string& newPath)
 
 PlayingSound Sound::play()
 {
-    return SoundManager::playSound(this);
+    return mixChunk == nullptr ?
+           PlayingSound(nullptr, -1) :
+           PlayingSound(mixChunk, Mix_PlayChannel(-1, mixChunk, 0));
 }
 
 string Sound::toString()
