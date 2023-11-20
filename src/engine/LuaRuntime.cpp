@@ -137,6 +137,11 @@ void LuaRuntime::init()
                 [](){return RenderManager::getWindow()->isFullscreen();},
                 [](const bool& state){return RenderManager::getWindow()->setFullscreen(state);}
             )
+            .addOverloadedFunctions(
+                "resizable",
+                [](){return RenderManager::getWindow()->isResizable();},
+                [](const bool& state){return RenderManager::getWindow()->setResizable(state);}
+            )
     );
 
     logInfo << "-- RenderManager";

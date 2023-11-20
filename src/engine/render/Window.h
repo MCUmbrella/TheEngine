@@ -48,6 +48,10 @@ public:
     bool isFullscreen();
 
     bool setFullscreen(const bool& state);
+
+    bool isResizable();
+
+    bool setResizable(const bool& state);
 };
 
 #endif //THEENGINE_WINDOW_H

@@ -43,4 +43,7 @@ rm -f ./cmake_install.cmake ./CMakeCache.txt ./Makefile ./TheEngine
 ```
 
 # TODO
-- statically link libsdl2 and liblua
+- make portable (statically linked, shipped with dll/so, appimage or some other methods)
+- multi-platform support
+- user script docs
+- more complex example

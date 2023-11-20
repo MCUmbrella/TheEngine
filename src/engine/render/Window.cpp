@@ -87,3 +87,15 @@ bool Window::setFullscreen(const bool& state)
 {
     return SDL_SetWindowFullscreen(sdlWindow, state);
 }
+
+bool Window::isResizable()
+{
+    return SDL_GetWindowFlags(sdlWindow) & SDL_WINDOW_RESIZABLE;
+}
+
+bool Window::setResizable(const bool& state)
+{
+    SDL_SetWindowResizable(sdlWindow, state ? SDL_TRUE : SDL_FALSE);
+    // i hate when they define their own true and false while stdbool.h or zero/non-zero is available, get fucked
+    return isResizable();
+}
