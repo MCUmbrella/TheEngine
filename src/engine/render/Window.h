@@ -44,6 +44,10 @@ public:
     void setTitle(const string& title_);
 
     void update();
+
+    bool isFullscreen();
+
+    bool setFullscreen(const bool& state);
 };
 
 #endif //THEENGINE_WINDOW_H

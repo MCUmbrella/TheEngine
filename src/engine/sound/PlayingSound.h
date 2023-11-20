@@ -47,17 +47,16 @@ public:
 
     /**
      * Get the volume of the playing sound.
-     * @return The current volume of the playing sound.
+     * @return Integer from 0 (silent) to 128 (max volume).
      */
     int getVolume();
 
     /**
      * Set the volume of the playing sound.
-     * @param vol 0 (silent) to 128 (max)
+     * @param vol 0 ~ 128.
      * @return The new volume.
      */
     int setVolume(const int& vol);
 };
-
 
 #endif //THEENGINE_PLAYINGSOUND_H

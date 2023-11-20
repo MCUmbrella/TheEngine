@@ -9,7 +9,6 @@
 #include "input/Mouse.h"
 #include "input/Keyboard.h"
 #include <string>
-#include <SDL2/SDL_scancode.h>
 
 using std::string;
 

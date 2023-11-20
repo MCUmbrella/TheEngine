@@ -21,10 +21,15 @@ end
 function tick()
     t = Engine.currentTick()
 
-    if Keyboard.pressed(41)
+    if Keyboard.pressed(41) -- ESC
     then
         Engine.stop()
         return
+    end
+
+    if Keyboard.pressed(68) -- F11
+    then
+        Window.fullscreen(not Window.fullscreen())
     end
 
     cursor:setLocation(Mouse.getX(), Mouse.getY())

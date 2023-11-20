@@ -132,6 +132,11 @@ void LuaRuntime::init()
             )
             .addStaticFunction("getTitle", [](){return RenderManager::getWindow()->getTitle();})
             .addStaticFunction("setTitle", [](const string& title){return RenderManager::getWindow()->setTitle(title);})
+            .addOverloadedFunctions(
+                "fullscreen",
+                [](){return RenderManager::getWindow()->isFullscreen();},
+                [](const bool& state){return RenderManager::getWindow()->setFullscreen(state);}
+            )
     );
 
     logInfo << "-- RenderManager";

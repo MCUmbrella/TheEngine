@@ -5,7 +5,7 @@
 #include "Window.h"
 #include "../exception/EngineException.h"
 
-Window::Window(unsigned int flags) : flags(flags)
+Window::Window(unsigned int f) : flags(f)
 {
     if((sdlWindow = SDL_CreateWindow(
         title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
@@ -76,4 +76,14 @@ void Window::update()
 {
     SDL_GetWindowPosition(sdlWindow, &x, &y);
     SDL_GetWindowSize(sdlWindow, &w, &h);
+}
+
+bool Window::isFullscreen()
+{
+    return SDL_GetWindowFlags(sdlWindow) & SDL_WINDOW_FULLSCREEN;
+}
+
+bool Window::setFullscreen(const bool& state)
+{
+    return SDL_SetWindowFullscreen(sdlWindow, state);
 }
