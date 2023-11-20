@@ -41,7 +41,7 @@ function prepare()
     player = layer1:addEntity(PLAYER_TEXTURE)
     player:setLocation(ww / 2, wh / 2)
 
-    SoundManager.playMusic(BGM)
+    BGM:play()
 end
 
 function tick()
@@ -57,7 +57,7 @@ function tick()
     -- print debug info
     if Keyboard.pressed(60) or Keyboard.repeated(60) -- F3
     then
-        SoundManager.playMusic(BGM)
+        BGM:play()
         printDebug()
     end
 
@@ -117,11 +117,11 @@ function tick()
     -- music volume adjustment
     if Keyboard.holding(82) -- ARROW UP
     then
-        SoundManager.musicVolume(SoundManager.musicVolume() + 1)
+        BGM.volume(BGM.volume() + 1)
     end
     if Keyboard.holding(81) -- ARROW DOWN
     then
-        SoundManager.musicVolume(SoundManager.musicVolume() - 1)
+        BGM.volume(BGM.volume() - 1)
     end
 
     Runtime.execute("playerMoveLogics.lua")

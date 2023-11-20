@@ -28,6 +28,7 @@ void LuaRuntime::log_l(const int& lvl, const string& msg)
             break;
         default:
             logError << "{L} " << msg;
+            break;
     }
 }
 
@@ -61,8 +62,8 @@ void LuaRuntime::init()
         UserdataMetatable<LuaRuntime>()
             .addOverloadedFunctions(
                 "log",
-                static_cast<void (*)(const int&, const string&)>(log_l),
-                static_cast<void (*)(const string&)>(log_l)
+                static_cast<void (*)(const int&, const string&)>(&log_l),
+                static_cast<void (*)(const string&)>(&log_l)
             )
             .addStaticFunction("execute", [](const string& path){
                 LuaRuntime::runFile(cfg.userDataPath + "/data/lua/" + path);
@@ -234,19 +235,6 @@ void LuaRuntime::init()
             .addStaticFunction("removeMusic", &SoundManager::removeMusic)
             .addStaticFunction("getMusic", &SoundManager::getMusic)
             .addStaticFunction("hasMusic", &SoundManager::hasMusic)
-            .addOverloadedFunctions(
-                "playMusic",
-                static_cast<void (*)(const string&)>(&SoundManager::playMusic),
-                static_cast<void (*)(const Music*)>(&SoundManager::playMusic)
-            )
-            .addStaticFunction("pauseMusic", &SoundManager::pauseMusic)
-            .addStaticFunction("resumeMusic", &SoundManager::resumeMusic)
-            .addStaticFunction("stopMusic", &SoundManager::stopMusic)
-            .addOverloadedFunctions(
-                "musicVolume",
-                &SoundManager::getMusicVolume,
-                &SoundManager::setMusicVolume
-            )
             .addStaticFunction("gc", &SoundManager::gc)
     );
 
@@ -265,10 +253,16 @@ void LuaRuntime::init()
             .addFunction("getName", &Music::getName)
             .addFunction("getPath", &Music::getPath)
             .addFunction("reassign", &Music::reassign)
+            .addFunction("isCurrent", &Music::isCurrent)
             .addFunction("play", &Music::play)
-            .addFunction("pause", &Music::pause)
-            .addFunction("resume", &Music::resume)
-            .addFunction("stop", &Music::stop)
+            .addStaticFunction("pause", &Music::pause)
+            .addStaticFunction("resume", &Music::resume)
+            .addStaticFunction("stop", &Music::stop)
+            .addOverloadedFunctions(
+                "volume",
+                &Music::getVolume,
+                &Music::setVolume
+            )
     );
 
     logInfo << "-- PlayingSound";

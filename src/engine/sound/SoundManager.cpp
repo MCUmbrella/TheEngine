@@ -227,39 +227,3 @@ bool SoundManager::hasMusic(const string& name)
 {
     return musics.contains(name);
 }
-
-void SoundManager::playMusic(const Music* music)
-{
-    if(music->mixMusic != nullptr)
-        Mix_PlayMusic(music->mixMusic, -1);
-}
-
-void SoundManager::playMusic(const string& name)
-{
-    playMusic(getMusic(name));
-}
-
-void SoundManager::pauseMusic()
-{
-    Mix_PauseMusic();
-}
-
-void SoundManager::resumeMusic()
-{
-    Mix_ResumeMusic();
-}
-
-void SoundManager::stopMusic()
-{
-    Mix_HaltMusic();
-}
-
-int SoundManager::getMusicVolume()
-{
-    return Mix_VolumeMusic(-1);
-}
-
-int SoundManager::setMusicVolume(int vol)
-{
-    return Mix_VolumeMusic(vol);
-}

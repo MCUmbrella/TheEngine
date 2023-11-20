@@ -9,7 +9,6 @@
 #include <SDL2/SDL_mixer.h>
 #include "Sound.h"
 #include "Music.h"
-#include "PlayingSound.h"
 
 using std::string;
 
@@ -142,6 +141,10 @@ public:
      */
     static void unloadMixMusic(const string& path);
 
+    /**
+     * Check if a music file is loaded.
+     * @param path The path of the file.
+     */
     static bool hasMixMusic(const string& path);
 
     /**
@@ -168,53 +171,10 @@ public:
      */
     static void removeMusic(const string& name);
 
+    /**
+     * Check if a Music object with the specified name exists.
+     */
     static bool hasMusic(const string& name);
-
-    /**
-     * Play a Music object from start and loop forever.
-     * If the internal pointer of the music is nullptr, this
-     * function will not do anything.
-     * @param music The pointer to the Music object.
-     */
-    static void playMusic(const Music* music);
-
-    /**
-     * Play a music by its name.
-     * @throw EngineException if the music with the specified
-     * name was not found.
-     */
-    static void playMusic(const string& name);
-
-    /**
-     * Pause the currently playing music.
-     * If there's no music playing, do nothing.
-     */
-    static void pauseMusic();
-
-    /**
-     * Resume the paused music.
-     * If there's no music played, do nothing.
-     */
-    static void resumeMusic();
-
-    /**
-     * Stop the currently playing music.
-     * If there's no music played, do nothing.
-     */
-    static void stopMusic();
-
-    /**
-     * Get the volume of the music.
-     * @return The current volume of the music.
-     */
-    static int getMusicVolume();
-
-    /**
-     * Set the volume of the music.
-     * @param vol 0 (silent) to 128 (max)
-     * @return The new volume.
-     */
-    static int setMusicVolume(int vol);
 };
 
 #endif //THEENGINE_SOUNDMANAGER_H
