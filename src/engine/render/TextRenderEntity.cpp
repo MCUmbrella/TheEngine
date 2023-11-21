@@ -11,8 +11,6 @@ TextRenderEntity::TextRenderEntity(const int64_t& id, const string& content, con
 {
     sdlTexture = RenderManager::text2Texture(content, 255, 255, 255, 255, fontName, pt);
     SDL_QueryTexture(sdlTexture, nullptr, nullptr, &textureWidth, &textureHeight);
-    hitboxWidth = textureWidth;
-    hitboxHeight = textureHeight;
 }
 
 TextRenderEntity::~TextRenderEntity()
@@ -37,7 +35,6 @@ TextRenderEntity* TextRenderEntity::setContent(const string& newContent)
     SDL_DestroyTexture(sdlTexture);
     sdlTexture = RenderManager::text2Texture(newContent, 255, 255, 255, 255, fontName, pt);
     resetTextureSize();
-    resetHitboxSize();
     resetCrop();
     content = newContent;
     return this;

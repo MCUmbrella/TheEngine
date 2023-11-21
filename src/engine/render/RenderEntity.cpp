@@ -15,8 +15,6 @@ RenderEntity::RenderEntity(const int64_t& id, const string& texturePath) : id(id
 {
     sdlTexture = RenderManager::getTexture(texturePath);
     SDL_QueryTexture(sdlTexture, nullptr, nullptr, &textureWidth, &textureHeight);
-    hitboxWidth = textureWidth;
-    hitboxHeight = textureHeight;
 }
 
 int64_t RenderEntity::getId()
@@ -53,12 +51,6 @@ void RenderEntity::rotate(const double& degree)
     textureDegree += degree;
 }
 
-void RenderEntity::setHitboxSize(const int& hx, const int& hy)
-{
-    hitboxWidth = hx;
-    hitboxHeight = hy;
-}
-
 void RenderEntity::setTextureSize(const int& tx, const int& ty)
 {
     textureWidth = tx;
@@ -70,18 +62,9 @@ void RenderEntity::resetTextureSize()
     SDL_QueryTexture(sdlTexture, nullptr, nullptr, &textureWidth, &textureHeight);
 }
 
-void RenderEntity::resetHitboxSize()
-{
-    int _hitboxWidth, _hitboxHeight;
-    SDL_QueryTexture(sdlTexture, nullptr, nullptr, &_hitboxWidth, &_hitboxHeight);
-    hitboxWidth = _hitboxWidth;
-    hitboxHeight = _hitboxHeight;
-}
-
 void RenderEntity::setTexture(const string& path)
 {
     sdlTexture = RenderManager::getTexture(path);
-    resetCrop();
 }
 
 int RenderEntity::getFlip()

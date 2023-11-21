@@ -42,7 +42,7 @@ public:
 
     /**
      * Set the content of the text entity.
-     * The texture size and hitbox size will be updated automatically.
+     * The texture size and crop state will reset.
      */
     TextRenderEntity* setContent(const string& newContent);
 };

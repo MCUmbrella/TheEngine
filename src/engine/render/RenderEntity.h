@@ -25,11 +25,6 @@ public:
     // This location is the center of the texture.
     double x = 0, y = 0;
 
-    // The 'actual' size of the entity.
-    // It's set to the same size as the initial
-    // texture and doesn't affect texture rendering.
-    double hitboxWidth = 0, hitboxHeight = 0;
-
     // The size of the texture. changing the value
     // will cause the texture to be stretched.
     int textureWidth = 0, textureHeight = 0;
@@ -72,8 +67,6 @@ public:
 
     void rotate(const double& d);
 
-    void setHitboxSize(const int& hx, const int& hy);
-
     void setTextureSize(const int& tx, const int& ty);
 
     /**
@@ -82,15 +75,10 @@ public:
     void resetTextureSize();
 
     /**
-     * Set the size of the entity's hitbox to the original size of entity's texture.
-     */
-    void resetHitboxSize();
-
-    /**
      * Change the entity's texture.
-     * The size of the texture and hitbox will retain, if you want to update them,
-     * call resetTextureSize() and resetHitboxSize().
-     * The texture cropping state will be reset.
+     * <br>
+     * NOTICE:
+     * The size, color/alpha mask, flip state and crop state of the texture will retain.
      * @param path The path of the texture.
      */
     virtual void setTexture(const string& path);

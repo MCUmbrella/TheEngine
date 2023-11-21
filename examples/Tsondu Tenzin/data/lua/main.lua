@@ -5,21 +5,8 @@ local layer0
 local layer1
 local tt = 0
 
-function printDebug()
-    Runtime.log("Tick: #" .. t)
-    Runtime.log("ID: " .. player:getId())
-    Runtime.log("Location: " .. player.x .. ", " .. player.y)
-    Runtime.log("Hixbox size: " .. player.hitboxWidth .. " * " .. player.hitboxHeight)
-    Runtime.log("Texture size: " .. player.textureWidth .. " * " .. player.textureHeight)
-    Runtime.log("texture upper-left location: " .. player.x - player.textureWidth / 2 .. ", " .. player.y - player.textureHeight / 2)
-    Runtime.log("texture bottom-right location: " .. player.x + player.textureWidth / 2 .. ", " .. player.y + player.textureHeight / 2)
-    Runtime.log("v: " .. vx .. ", " .. vy)
-end
-
 function prepare()
     G = 9.8
-    vx = 0
-    vy = 0
     Window.setTitle("The Amazing Adventure of Tsondu Tenzin")
     RenderManager.loadTexture(PLAYER_TEXTURE)
     RenderManager.loadTexture(BG_TEXTURE)
@@ -38,8 +25,11 @@ function prepare()
     SHIFT_SOUND = SoundManager.addSound("shift", "sfx/entity/dj/gm.ogg")
     BGM = SoundManager.addMusic("bgm", "music/bgm.ogg")
 
-    player = layer1:addEntity(PLAYER_TEXTURE)
-    player:setLocation(ww / 2, wh / 2)
+    Runtime.execute("classes/entities/Entity.lua") -- load the Entity class
+    Runtime.execute("classes/entities/Player.lua") -- load the Player class
+
+    player = Player:new(layer1:addEntity(PLAYER_TEXTURE))
+    player.base:setLocation(ww / 2, wh / 2)
 
     BGM:play()
 end
@@ -57,9 +47,13 @@ function tick()
     -- print debug info
     if Keyboard.pressed(60) or Keyboard.repeated(60) -- F3
     then
+        Runtime.log("Tick: #" .. t)
         BGM:play()
-        printDebug()
+        player:printDebug()
     end
+
+    -- player move logics (see "classes/entities/Player.lua")
+    player:doMove()
 
     -- texture offset demo
     if Keyboard.holding(224) -- LCTRL
@@ -68,7 +62,7 @@ function tick()
         then
             playingCtrlSound = CTRL_SOUND:play()
         end
-        player:setTextureOffset(
+        player.base:setTextureOffset(
                 math.floor(math.sin(t / 15) * 20),
                 math.floor(math.cos(t / 15) * 10)
         )
@@ -78,7 +72,7 @@ function tick()
             playingCtrlSound:stop()
             playingCtrlSound = nil
         end
-        player:setTextureOffset(0, 0)
+        player.base:setTextureOffset(0, 0)
     end
 
     -- texture resizing demo
@@ -90,7 +84,7 @@ function tick()
         end
         tt = tt + 1
         local m = math.sin(tt / 15) * 10
-        player:setTextureSize(
+        player.base:setTextureSize(
                 math.floor(player.hitboxWidth + m),
                 math.floor(player.hitboxHeight + m * player.hitboxHeight / player.hitboxWidth)
         )
@@ -101,17 +95,17 @@ function tick()
             playingShiftSound = nil
         end
         tt = 0
-        player:resetTextureSize()
+        player.base:resetTextureSize()
     end
 
     -- texture rotation demo
     if Keyboard.holding(80) -- ARROW LEFT
     then
-        player:rotate(-0.1)
+        player.base:rotate(-0.1)
     end
     if Keyboard.holding(79) -- ARROW RIGHT
     then
-        player:rotate(0.1)
+        player.base:rotate(0.1)
     end
 
     -- music volume adjustment
@@ -123,8 +117,6 @@ function tick()
     then
         BGM.volume(BGM.volume() - 1)
     end
-
-    Runtime.execute("playerMoveLogics.lua")
 end
 
 function cleanup()
