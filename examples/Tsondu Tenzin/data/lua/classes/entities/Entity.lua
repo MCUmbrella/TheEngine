@@ -19,6 +19,7 @@ function Entity:printDebug()
     Runtime.log("Texture size: " .. self.base.textureWidth .. " * " .. self.base.textureHeight)
     Runtime.log("texture upper-left location: " .. self.base.x - self.base.textureWidth / 2 .. ", " .. self.base.y - self.base.textureHeight / 2)
     Runtime.log("texture bottom-right location: " .. self.base.x + self.base.textureWidth / 2 .. ", " .. self.base.y + self.base.textureHeight / 2)
+    Runtime.log("Texture rotation: " .. self.base.textureDegree)
     Runtime.log("Velocity: " .. self.vx .. ", " .. self.vy)
 end
 

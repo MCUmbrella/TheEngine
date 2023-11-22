@@ -44,20 +44,14 @@ end
 function Player:doMove() -- check the key press and do the move
     self.vy = self.vy + G / 60 -- apply the gravity first
 
-    if Keyboard.holding(4) -- A
+    if Keyboard.holding(4) and not Keyboard.holding(7) -- A: move left
     then
         self.base:setFlip(1)
-        if (self.vx > -5)
-        then
-            self.vx = self.vx - 0.5
-        end
-    elseif Keyboard.holding(7) -- D
+        self.vx = math.max(-5, self.vx - 0.5)
+    elseif Keyboard.holding(7) and not Keyboard.holding(4) -- D: move right
     then
         self.base:setFlip(0)
-        if (self.vx < 5)
-        then
-            self.vx = self.vx + 0.5
-        end
+        self.vx = math.min(5, self.vx + 0.5)
     else
         if (self.vx > 0)
         then

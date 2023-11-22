@@ -7,30 +7,35 @@ local tt = 0
 
 function prepare()
     G = 9.8
-    Window.setTitle("The Amazing Adventure of Tsondu Tenzin")
-    RenderManager.loadTexture(PLAYER_TEXTURE)
-    RenderManager.loadTexture(BG_TEXTURE)
 
+    -- set up window
+    Window.setTitle("The Amazing Adventure of Tsondu Tenzin")
     ww = Window.getWidth()
     wh = Window.getHeight()
+
+    -- set up background
     layer0 = RenderManager.getLayer(0)
-    layer1 = RenderManager.addLayer(1)
+    RenderManager.loadTexture(BG_TEXTURE)
     background = layer0:addEntity(BG_TEXTURE)
     background:setLocation(ww / 2, wh / 2)
     background:setTextureSize(ww, wh)
 
+    -- set up classes
+    Runtime.execute("classes/entities/Entity.lua") -- load the Entity class
+    Runtime.execute("classes/entities/Player.lua") -- load the Player class
+
+    -- set up player
+    RenderManager.loadTexture(PLAYER_TEXTURE)
+    layer1 = RenderManager.addLayer(1)
+    player = Player:new(layer1:addEntity(PLAYER_TEXTURE))
+    player.base:setLocation(ww / 2, wh / 2)
+
+    -- set up music & sfx
     JUMP_SOUND = SoundManager.addSound("jump", "sfx/entity/dj/1.ogg")
     WALLJUMP_SOUND = SoundManager.addSound("walljump", "sfx/entity/dj/5.ogg")
     CTRL_SOUND = SoundManager.addSound("ctrl", "sfx/entity/dj/ltc.ogg")
     SHIFT_SOUND = SoundManager.addSound("shift", "sfx/entity/dj/gm.ogg")
     BGM = SoundManager.addMusic("bgm", "music/bgm.ogg")
-
-    Runtime.execute("classes/entities/Entity.lua") -- load the Entity class
-    Runtime.execute("classes/entities/Player.lua") -- load the Player class
-
-    player = Player:new(layer1:addEntity(PLAYER_TEXTURE))
-    player.base:setLocation(ww / 2, wh / 2)
-
     BGM:play()
 end
 
@@ -58,16 +63,13 @@ function tick()
     -- texture offset demo
     if Keyboard.holding(224) -- LCTRL
     then
-        if playingCtrlSound == nil
-        then
-            playingCtrlSound = CTRL_SOUND:play()
-        end
+        playingCtrlSound = playingCtrlSound or CTRL_SOUND:play()
         player.base:setTextureOffset(
                 math.floor(math.sin(t / 15) * 20),
                 math.floor(math.cos(t / 15) * 10)
         )
     else
-        if not (playingCtrlSound == nil)
+        if playingCtrlSound
         then
             playingCtrlSound:stop()
             playingCtrlSound = nil
@@ -78,10 +80,7 @@ function tick()
     -- texture resizing demo
     if Keyboard.holding(225) -- LSHIFT
     then
-        if playingShiftSound == nil
-        then
-            playingShiftSound = SHIFT_SOUND:play()
-        end
+        playingShiftSound = playingShiftSound or SHIFT_SOUND:play()
         tt = tt + 1
         local m = math.sin(tt / 15) * 10
         player.base:setTextureSize(
@@ -89,7 +88,7 @@ function tick()
                 math.floor(player.hitboxHeight + m * player.hitboxHeight / player.hitboxWidth)
         )
     else
-        if not (playingShiftSound == nil)
+        if playingShiftSound
         then
             playingShiftSound:stop()
             playingShiftSound = nil
