@@ -52,4 +52,4 @@ end
 function cleanup()
     RenderManager.unloadTexture(CURSOR_TEXTURE)
     Runtime.log("Placeholder level ended")
-end 
+end

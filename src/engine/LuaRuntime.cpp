@@ -249,7 +249,9 @@ void LuaRuntime::init()
         UserdataMetatable<Sound>()
             .addFunction("getName", &Sound::getName)
             .addFunction("getPath", &Sound::getPath)
-            .addFunction("reassign", &Sound::reassign)
+            .addStaticFunction("reassign", [](Sound* instance, const string& path){
+                return instance->reassign(cfg.userDataPath + "/assets/sounds/" + path);
+            })
             .addFunction("play", &Sound::play)
     );
 
@@ -258,7 +260,9 @@ void LuaRuntime::init()
         UserdataMetatable<Music>()
             .addFunction("getName", &Music::getName)
             .addFunction("getPath", &Music::getPath)
-            .addFunction("reassign", &Music::reassign)
+            .addStaticFunction("reassign", [](Music* instance, const string& path){
+                return instance->reassign(cfg.userDataPath + "/assets/sounds/" + path);
+            })
             .addFunction("isCurrent", &Music::isCurrent)
             .addFunction("play", &Music::play)
             .addStaticFunction("pause", &Music::pause)
